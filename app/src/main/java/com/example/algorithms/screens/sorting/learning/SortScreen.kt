@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.sorting.bubble_sorting.learning
+package com.example.algorithms.screens.sorting.learning
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

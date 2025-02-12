@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.sorting.bubble_sorting.learning
+package com.example.algorithms.screens.sorting.learning.bubble_sorting
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize

@@ -15,6 +15,7 @@ val algorithmCategories = listOf(
         items = listOf(
             AlgorithmItem("Сортировка пузырьком"),
             AlgorithmItem("Сортировка выбором"),
+            AlgorithmItem("Сортировка вставками"),
             AlgorithmItem("Быстрая сортировка")
         )
     ),

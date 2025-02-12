@@ -16,3 +16,9 @@ data class SelectionSortStep(
     val selectedIndices: Pair<Int, Int>?, // Индексы текущего сравнения или обмена
     override val sortedBoundary: Int
 ) : SortStep(array, sortedBoundary)
+
+data class InsertionSortStep(
+    override val array: List<Int>,
+    val selectedIndices: Pair<Int, Int>?, // Индексы текущего сравнения или обмена
+    override val sortedBoundary: Int
+) : SortStep(array, sortedBoundary)

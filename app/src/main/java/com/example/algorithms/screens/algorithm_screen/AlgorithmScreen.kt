@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.alghoritm_screen
+package com.example.algorithms.screens.algorithm_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -9,11 +9,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.algorithms.screens.selection.AlgorithmSelectionScreen
-import com.example.algorithms.screens.MenuScreen
+import com.example.algorithms.screens.menu.MenuScreen
 import com.example.algorithms.screens.sorting.BubbleSortingVisualizationScreen
 import com.example.algorithms.screens.selection.PracticeScreen
 import com.example.algorithms.screens.selection.TheoryScreen
 import com.example.algorithms.screens.sorting.BubbleSortingLearningScreen
+import com.example.algorithms.screens.sorting.InsertionSortingLearningScreen
 import com.example.algorithms.screens.sorting.SortingSelectionLearningScreen
 
 @Composable
@@ -55,6 +56,7 @@ fun AppNavigation() {
             when (algorithmTitle) {
                 "Сортировка пузырьком" -> BubbleSortingLearningScreen(navController)
                 "Сортировка выбором" -> SortingSelectionLearningScreen(navController)
+                "Сортировка вставками" -> InsertionSortingLearningScreen(navController)
                 // TODO Добавьте другие теории алгоритмов здесь
 
                 else -> TheoryScreen(navController, algorithmTitle)

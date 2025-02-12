@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.sorting.bubble_sorting.simulation
+package com.example.algorithms.screens.sorting.simulation.bubble_sorting
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState

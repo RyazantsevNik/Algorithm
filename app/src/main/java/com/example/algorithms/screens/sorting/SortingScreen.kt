@@ -3,10 +3,11 @@ package com.example.algorithms.screens.sorting
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.example.algorithms.screens.alghoritm_screen.AlgorithmScreen
-import com.example.algorithms.screens.sorting.bubble_sorting.learning.BubbleSortingLearning
-import com.example.algorithms.screens.sorting.bubble_sorting.simulation.BubbleSortingSimulation
-import com.example.algorithms.screens.sorting.seletion_sorting.learning.SelectionSortingLearning
+import com.example.algorithms.screens.algorithm_screen.AlgorithmScreen
+import com.example.algorithms.screens.sorting.learning.bubble_sorting.BubbleSortingLearning
+import com.example.algorithms.screens.sorting.learning.insertion_sorting.InsertionSortingLearning
+import com.example.algorithms.screens.sorting.simulation.bubble_sorting.BubbleSortingSimulation
+import com.example.algorithms.screens.sorting.learning.selection_sorting.SelectionSortingLearning
 
 @Composable
 fun BubbleSortingVisualizationScreen(navController: NavHostController) {
@@ -35,6 +36,16 @@ fun SortingSelectionLearningScreen(navController: NavHostController) {
         navController = navController
     ) {
         SelectionSortingLearning()
+    }
+}
+
+@Composable
+fun InsertionSortingLearningScreen(navController: NavHostController) {
+    AlgorithmScreen(
+        title = "Сортировка вставками",
+        navController = navController
+    ) {
+        InsertionSortingLearning()
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.sorting.seletion_sorting.learning
+package com.example.algorithms.screens.sorting.learning.insertion_sorting
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
@@ -21,12 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.algorithms.data.SelectionSortStep
+import com.example.algorithms.data.InsertionSortStep
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
-fun SelectionSortVisualization(step: SelectionSortStep) {
+fun InsertionSortVisualization(step: InsertionSortStep) {
     val array = step.array
     val selected = step.selectedIndices
     val sortedBoundary = step.sortedBoundary
@@ -66,11 +65,7 @@ fun SelectionSortVisualization(step: SelectionSortStep) {
                         .background(boxColor, shape = RoundedCornerShape(4.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = value.toString(),
-                        color = Color.White,
-                        fontSize = 10.sp
-                    )
+                    Text(text = value.toString(), color = Color.White)
                 }
             }
         }

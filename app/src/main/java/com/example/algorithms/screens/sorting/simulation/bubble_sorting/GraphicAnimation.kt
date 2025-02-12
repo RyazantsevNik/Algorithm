@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.sorting.bubble_sorting.simulation
+package com.example.algorithms.screens.sorting.simulation.bubble_sorting
 
 import android.graphics.Paint
 import android.graphics.Typeface

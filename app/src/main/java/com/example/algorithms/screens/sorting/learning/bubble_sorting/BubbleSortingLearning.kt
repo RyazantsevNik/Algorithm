@@ -1,10 +1,12 @@
-package com.example.algorithms.screens.sorting.bubble_sorting.learning
+package com.example.algorithms.screens.sorting.learning.bubble_sorting
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.algorithms.screens.sorting.learning.IntroScreen
+import com.example.algorithms.screens.sorting.learning.SortScreen
 import com.example.algorithms.viewmodels.BubbleSortStepViewModel
 import org.koin.androidx.compose.getViewModel
 
@@ -17,7 +19,7 @@ fun BubbleSortingLearning(viewModel: BubbleSortStepViewModel = getViewModel()) {
             algorithmTitle = "Сортировка пузырьком",
             principleContent = "Алгоритм проходит по массиву, сравнивая соседние элементы и меняя их местами, если они стоят в неправильном порядке.",
             passesContent = "После каждого прохода последний элемент оказывается на своём месте, и цикл повторяется для оставшихся элементов.",
-            efficiencyContent = "Алгоритм имеет временную сложность O(n²), что делает его понятным для обучения, но неэффективным для больших массивов."
+            efficiencyContent = "Алгоритм имеет временную сложность O(n²), эффективен на небольших массивах данных, но неэффективен на больших из-за большого числа операций обмена."
         ) { showIntro = false }
     } else {
         SortScreen(viewModel)

@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.sorting.bubble_sorting.learning
+package com.example.algorithms.screens.sorting.learning
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.algorithms.viewmodels.BaseSortStepViewModel
 import com.example.algorithms.viewmodels.BubbleSortStepViewModel
+import com.example.algorithms.viewmodels.InsertionSortStepViewModel
 import com.example.algorithms.viewmodels.SelectionSortStepViewModel
 
 @Composable
@@ -25,6 +26,8 @@ fun SortedElementsCard(viewModel: BaseSortStepViewModel) {
             viewModel.steps[viewModel.currentStepIndex].array.size -
                     viewModel.steps[viewModel.currentStepIndex].sortedBoundary
         is SelectionSortStepViewModel ->
+            viewModel.steps[viewModel.currentStepIndex].sortedBoundary
+        is InsertionSortStepViewModel ->
             viewModel.steps[viewModel.currentStepIndex].sortedBoundary
         else -> 0
     }

@@ -1,4 +1,4 @@
-package com.example.algorithms.screens
+package com.example.algorithms.screens.menu
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState

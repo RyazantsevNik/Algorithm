@@ -5,7 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
-import com.example.algorithms.screens.alghoritm_screen.AlgorithmScreen
+import com.example.algorithms.screens.algorithm_screen.AlgorithmScreen
 
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.sorting.bubble_sorting.simulation
+package com.example.algorithms.screens.sorting.simulation.bubble_sorting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.algorithms.screens.sorting.simulation.CustomButton
 import com.example.algorithms.viewmodels.BubbleSortViewModel
 import org.koin.androidx.compose.getViewModel
 

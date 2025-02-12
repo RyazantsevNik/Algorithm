@@ -30,7 +30,7 @@ data class BubbleSortState(
 )
 
 
-class BubbleSortViewModel : ViewModel() {
+open class BubbleSortViewModel : ViewModel() {
     private val _state = MutableStateFlow(BubbleSortState())
     open val state: StateFlow<BubbleSortState> = _state.asStateFlow()
 
