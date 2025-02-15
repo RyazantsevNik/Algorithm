@@ -39,13 +39,13 @@ fun SelectionSortVisualization(step: SelectionSortStep) {
         verticalAlignment = Alignment.Bottom
     ) {
         array.forEachIndexed { index, value ->
-            // Анимация смещения по оси Y
+
             val offsetY by animateFloatAsState(
                 targetValue = if (selected != null && (index == selected.first || index == selected.second)) -10f else 0f,
                 label = "offsetY_$index"
             )
 
-            // Определение цвета блока
+
             val boxColor = when {
                 selected?.first == index || selected?.second == index -> Color.Red
                 index < sortedBoundary -> Color(0xFF4CAF50)
@@ -56,8 +56,8 @@ fun SelectionSortVisualization(step: SelectionSortStep) {
                 modifier = Modifier
                     .width(30.dp)
                     .height((value * 15).dp)
-                    .offset(y = offsetY.dp) // Применяем анимацию смещения
-                    .animateContentSize(), // Анимация изменения размера
+                    .offset(y = offsetY.dp)
+                    .animateContentSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Box(

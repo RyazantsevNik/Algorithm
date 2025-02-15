@@ -54,8 +54,8 @@ fun BubbleSortVisualization(step: BubbleSortStep) {
                 modifier = Modifier
                     .width(30.dp)
                     .height((value * 15).dp)
-                    .offset(y = offsetY.dp) // Применяем анимацию смещения
-                    .animateContentSize(), // Анимация изменения размера
+                    .offset(y = offsetY.dp)
+                    .animateContentSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Box(

@@ -20,7 +20,6 @@ import com.example.algorithms.viewmodels.SelectionSortStepViewModel
 
 @Composable
 fun SortedElementsCard(viewModel: BaseSortStepViewModel) {
-    // Рассчитываем sortedCount в зависимости от типа ViewModel
     val sortedCount = when (viewModel) {
         is BubbleSortStepViewModel ->
             viewModel.steps[viewModel.currentStepIndex].array.size -

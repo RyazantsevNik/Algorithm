@@ -72,7 +72,7 @@ fun SectionCard(
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp),
                 thickness = 1.dp,
-                color = contentColor.copy(alpha = 0.5f) // Полупрозрачная линия
+                color = contentColor.copy(alpha = 0.5f)
             )
             Text(
                 text = description,

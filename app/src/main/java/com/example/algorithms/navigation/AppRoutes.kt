@@ -1,24 +1,23 @@
 package com.example.algorithms.navigation
 
 object AppRoutes {
-    //Меню
-    const val MENU = "menu"
+    const val HOME = "home"
+    const val ALGORITHMS = "algorithms"
+    const val AI_CHAT = "ai_chat"
+    const val PROFILE = "profile"
+    const val AUTH_SCREEN = "auth_screen"
 
-    //Выбор теория/практика алгоритма
-    const val ALGORITHM_SELECTION = "algorithm_selection/{algorithmTitle}"
-    const val THEORY_SCREEN = "theory_screen/{algorithmTitle}"
-    const val PRACTISE_SCREEN = "practice_screen/{algorithmTitle}"
+    // Подмаршруты
+    private const val ALGORITHM_SELECTION_BASE = "algorithm_selection"
+    private const val THEORY_SCREEN_BASE = "theory_screen"
+    private const val PRACTISE_SCREEN_BASE = "practise_screen"
 
-    // Функции для создания маршрутов с параметрами
-    fun algorithmSelectionRoute(algorithmTitle: String): String {
-        return "algorithm_selection/$algorithmTitle"
-    }
 
-    fun theoryScreenRoute(algorithmTitle: String): String {
-        return "theory_screen/$algorithmTitle"
-    }
+    const val ALGORITHM_SELECTION = "$ALGORITHM_SELECTION_BASE/{algorithmTitle}"
+    const val THEORY_SCREEN = "$THEORY_SCREEN_BASE/{algorithmTitle}"
+    const val PRACTISE_SCREEN = "$PRACTISE_SCREEN_BASE/{algorithmTitle}"
 
-    fun practiceScreenRoute(algorithmTitle: String): String {
-        return "practice_screen/$algorithmTitle"
-    }
+    fun algorithmSelectionRoute(algorithmTitle: String) = "$ALGORITHM_SELECTION_BASE/$algorithmTitle"
+    fun theoryScreenRoute(algorithmTitle: String) = "$THEORY_SCREEN_BASE/$algorithmTitle"
+    fun practiceScreenRoute(algorithmTitle: String) = "$PRACTISE_SCREEN_BASE/$algorithmTitle"
 }

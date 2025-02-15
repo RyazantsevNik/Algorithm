@@ -64,7 +64,6 @@ fun AlgorithmSelectionScreen(
         ) {
             var startAnimation by remember { mutableStateOf(false) }
 
-            // Запускаем анимацию с небольшой задержкой
             LaunchedEffect(Unit) {
                 delay(300)
                 startAnimation = true
@@ -85,7 +84,6 @@ fun AlgorithmSelectionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Заголовок
                 Text(
                     text = "Выберите раздел",
                     style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
@@ -94,7 +92,6 @@ fun AlgorithmSelectionScreen(
                         .padding(bottom = 20.dp)
                         .graphicsLayer { this.alpha = alpha }
                 )
-                // Подзаголовок
                 Text(
                     text = "Изучите основы алгоритма или попробуйте его в действии!",
                     style = MaterialTheme.typography.bodyMedium,
@@ -138,7 +135,6 @@ fun AlgorithmSelectionScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Дополнительный информационный блок (InfoCard)
                 Box(
                     modifier = Modifier
                         .graphicsLayer { this.alpha = alpha }
