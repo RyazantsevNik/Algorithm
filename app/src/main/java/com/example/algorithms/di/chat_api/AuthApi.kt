@@ -1,13 +1,12 @@
 package com.example.algorithms.di.chat_api
 
+import com.google.gson.annotations.SerializedName
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.GET
-import retrofit2.http.Header
 
 data class LoginResponse(
-    val access_token: String,
-    val token_type: String
+    @SerializedName("access_token")val accessToken: String,
+    @SerializedName("token_type")val tokenType: String
 )
 
 interface AuthApi {
@@ -17,6 +16,5 @@ interface AuthApi {
     @POST("/login/")
     suspend fun login(@Body request: LoginRequest): LoginResponse
 
-    @GET("/logout")
-    suspend fun logout(@Header("Authorization") token: String)
+
 }

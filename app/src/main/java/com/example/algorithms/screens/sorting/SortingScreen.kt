@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import com.example.algorithms.screens.algorithm_screen.AlgorithmScreen
 import com.example.algorithms.screens.sorting.learning.bubble_sorting.BubbleSortingLearning
 import com.example.algorithms.screens.sorting.learning.insertion_sorting.InsertionSortingLearning
+import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
 import com.example.algorithms.screens.sorting.simulation.bubble_sorting.BubbleSortingSimulation
 import com.example.algorithms.screens.sorting.learning.selection_sorting.SelectionSortingLearning
 
@@ -55,7 +56,7 @@ fun SortingQuickScreen(navController: NavHostController) {
         title = "Быстрая сортировка",
         navController = navController
     ) {
-        Text("Визуализация быстрой сортировки")
+        QuickSortingLearning()
     }
 }
 

@@ -23,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -52,22 +53,25 @@ import com.example.algorithms.ui.theme.LightBlue
 fun HomeScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Главная") },
-                actions = {
-                    IconButton(onClick = { navController.navigate(AppRoutes.PROFILE) }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Профиль",
-                            tint = TextPrimary
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BackgroundTop,
-                    titleContentColor = TextPrimary
+            Column {
+                TopAppBar(
+                    title = { Text("Главная") },
+                    actions = {
+                        IconButton(onClick = { navController.navigate(AppRoutes.PROFILE) }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Профиль",
+                                tint = TextPrimary
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = BackgroundTop,
+                        titleContentColor = TextPrimary
+                    )
                 )
-            )
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+            }
         }
     ) { padding ->
         Box(
@@ -84,6 +88,7 @@ fun HomeScreen(navController: NavHostController) {
                     .padding(padding)
                     .fillMaxSize()
             ) {
+
                 ProgressSection()
                 FavoriteSection(navController)
                 RecommendationsSection(navController)

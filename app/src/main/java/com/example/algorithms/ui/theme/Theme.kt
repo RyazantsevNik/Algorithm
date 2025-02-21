@@ -10,20 +10,27 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF6200EE), // Основной цвет
-    secondary = Color(0xFF3700B3), // Вторичный цвет
-    tertiary = Color(0xFF03DAC5), // Акцентный цвет
-    background = Color(0xFFF5F5F5), // Фон
-    surface = Color.White,
+    primary = PrimaryBlue,
+    primaryContainer = SoftBlue,
+    onPrimaryContainer = DarkBlue,
+    secondary = LightBlue,
+    background = BackgroundWhite,
+    surface = BackgroundWhite,
+    surfaceVariant = Color.White,
+    error = ErrorRed,
     onPrimary = Color.White,
     onSecondary = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.Black
+    onBackground = TextPrimary,
+    onSurface = TextPrimary,
+    onSurfaceVariant = TextSecondary
 )
 
 @Composable
@@ -61,6 +68,16 @@ fun AlgorithmsTheme(
         }
 
         else -> LightColorScheme
+    }
+
+    val view = LocalView.current
+    
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
+        }
     }
 
     MaterialTheme(

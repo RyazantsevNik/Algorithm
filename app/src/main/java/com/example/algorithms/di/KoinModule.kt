@@ -21,5 +21,6 @@ val appModule = module {
     viewModel { BubbleSortStepViewModel() }
     viewModel { SelectionSortStepViewModel() }
     viewModel { InsertionSortStepViewModel() }
+    viewModel { QuickSortStepViewModel() }
     viewModel { ProfileViewModel(get(), get()) }
 }

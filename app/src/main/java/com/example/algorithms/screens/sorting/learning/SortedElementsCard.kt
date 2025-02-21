@@ -17,6 +17,7 @@ import com.example.algorithms.viewmodels.BaseSortStepViewModel
 import com.example.algorithms.viewmodels.BubbleSortStepViewModel
 import com.example.algorithms.viewmodels.InsertionSortStepViewModel
 import com.example.algorithms.viewmodels.SelectionSortStepViewModel
+import com.example.algorithms.viewmodels.QuickSortStepViewModel
 
 @Composable
 fun SortedElementsCard(viewModel: BaseSortStepViewModel) {
@@ -27,6 +28,8 @@ fun SortedElementsCard(viewModel: BaseSortStepViewModel) {
         is SelectionSortStepViewModel ->
             viewModel.steps[viewModel.currentStepIndex].sortedBoundary
         is InsertionSortStepViewModel ->
+            viewModel.steps[viewModel.currentStepIndex].sortedBoundary
+        is QuickSortStepViewModel ->
             viewModel.steps[viewModel.currentStepIndex].sortedBoundary
         else -> 0
     }

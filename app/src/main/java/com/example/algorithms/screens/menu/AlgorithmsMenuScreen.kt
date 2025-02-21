@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
@@ -29,12 +28,14 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,10 +51,13 @@ import com.example.algorithms.data.AlgorithmCategory
 import com.example.algorithms.data.AlgorithmItem
 import com.example.algorithms.data.algorithmCategories
 import com.example.algorithms.navigation.AppRoutes
+import com.example.algorithms.ui.theme.BackgroundBottom
+import com.example.algorithms.ui.theme.BackgroundTop
 import com.example.algorithms.ui.theme.PastelPurple
 import com.example.algorithms.ui.theme.PrimaryBlue
 import com.example.algorithms.ui.theme.SoftGreen
 import com.example.algorithms.ui.theme.SoftOrange
+import com.example.algorithms.ui.theme.TextPrimary
 import com.example.algorithms.ui.theme.TextSecondary
 import com.example.algorithms.viewmodels.MenuViewModel
 
@@ -64,25 +68,41 @@ fun AlgorithmsMenuScreen(navController: NavHostController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Алгоритмы") },
-                actions = {
-                    IconButton(onClick = { navController.navigate(AppRoutes.PROFILE) }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Профиль",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            )
+            Column {
+                TopAppBar(
+                    title = { Text("Алгоритмы") },
+                    actions = {
+                        IconButton(onClick = { navController.navigate(AppRoutes.PROFILE) }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Профиль",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = BackgroundTop,
+                        titleContentColor = TextPrimary
+                    )
+                )
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = Color.LightGray
+                )
+            }
         }
     ) { padding ->
+
         LazyColumn(
             modifier = Modifier
                 .padding(padding)
-                .background(MaterialTheme.colorScheme.background)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(BackgroundTop, BackgroundBottom)
+                    )
+                )
         ) {
+
             algorithmCategories.forEach { category ->
                 item {
                     CategoryWithSubItems(
@@ -192,7 +212,7 @@ fun SubItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 4.dp)
-            .clickable { 
+            .clickable {
                 viewModel.clickItem(item.title)
                 navController.navigate(AppRoutes.algorithmSelectionRoute(item.title))
             },
@@ -228,14 +248,11 @@ fun SubItem(
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            repeat(3) { index ->
+                            repeat(3) {
                                 Icon(
                                     imageVector = Icons.Default.Star,
                                     contentDescription = null,
-                                    //tint = if (index < item.difficulty)
-                                    //    MaterialTheme.colorScheme.primary
-                                    //else
-                                    tint =  MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -244,12 +261,12 @@ fun SubItem(
                 }
                 //TODO
 //                if (item.isCompleted) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Пройдено",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Пройдено",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
 //                }
             }
         }

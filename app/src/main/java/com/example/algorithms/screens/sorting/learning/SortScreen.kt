@@ -168,7 +168,7 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
         // Автоматический режим
         LaunchedEffect(key1 = viewModel.isAuto, key2 = viewModel.currentStepIndex) {
             if (viewModel.isAuto && viewModel.currentStepIndex < viewModel.steps.size - 1) {
-                kotlinx.coroutines.delay(300L)
+                kotlinx.coroutines.delay(800L)
                 viewModel.goToNextStep()
             } else if (viewModel.currentStepIndex == viewModel.steps.size - 1) {
                 viewModel.isAuto = false

@@ -21,6 +21,7 @@ import com.example.algorithms.screens.selection.TheoryScreen
 import com.example.algorithms.screens.sorting.BubbleSortingLearningScreen
 import com.example.algorithms.screens.sorting.InsertionSortingLearningScreen
 import com.example.algorithms.screens.sorting.SortingSelectionLearningScreen
+import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
 
 @Composable
 fun AppNavigation() {
@@ -85,6 +86,7 @@ fun AppNavigation() {
                     "Сортировка пузырьком" -> BubbleSortingLearningScreen(navController)
                     "Сортировка выбором" -> SortingSelectionLearningScreen(navController)
                     "Сортировка вставками" -> InsertionSortingLearningScreen(navController)
+                    "Быстрая сортировка" -> QuickSortingLearning()
                     // TODO Добавьте другие теории алгоритмов здесь
 
                     else -> TheoryScreen(navController, algorithmTitle)

@@ -22,3 +22,13 @@ data class InsertionSortStep(
     val selectedIndices: Pair<Int, Int>?, // Индексы текущего сравнения или обмена
     override val sortedBoundary: Int
 ) : SortStep(array, sortedBoundary)
+
+data class QuickSortStep(
+    override val array: List<Int>,
+    val pivotIndex: Int? = null,
+    val leftPointer: Int? = null,
+    val rightPointer: Int? = null,
+    val partitionRange: Pair<Int, Int>? = null,
+    val sortedIndices: Set<Int> = emptySet(),
+    override val sortedBoundary: Int
+) : SortStep(array, sortedBoundary)

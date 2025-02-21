@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.algorithms.data.BubbleSortStep
 import com.example.algorithms.data.InsertionSortStep
+import com.example.algorithms.data.QuickSortStep
 import com.example.algorithms.data.SelectionSortStep
 import com.example.algorithms.data.SortStep
 
@@ -95,6 +96,55 @@ fun ExplanationCard(stepIndex: Int, steps: List<SortStep>) {
                         } else {
                             "Сравниваем элементы ${step.array[i1]} и ${step.array[i2]}. " +
                                     "Определяем, нужно ли переместить элемент ${step.array[i2]} левее."
+                        }
+                    }
+                }
+            }
+        }
+        is QuickSortStep -> {
+            when {
+                stepIndex == 0 ->
+                    "Принцип работы: выбираем опорный элемент и начинаем процесс разделения массива. " +
+                    "Все элементы меньше опорного будут перемещены влево, а больше - вправо."
+                step.pivotIndex == null ->
+                    "Массив отсортирован"
+                step.leftPointer == null && step.rightPointer == null -> {
+                    if (step.partitionRange == null) {
+                        "Выбран опорный элемент ${step.array[step.pivotIndex]}. " +
+                                "Начинаем разделение массива относительно него."
+                    } else {
+                        val (start, end) = step.partitionRange
+                        if (step.pivotIndex in step.sortedIndices) {
+                            "Опорный элемент ${step.array[step.pivotIndex]} занял свою окончательную позицию ${step.pivotIndex}"
+                        } else {
+                            "Выбран опорный элемент ${step.array[step.pivotIndex]} из позиции ${step.pivotIndex}. " +
+                                    "Начинаем разделение массива [${start}..${end}]."
+                        }
+                    }
+                }
+                else -> {
+                    when {
+                        step.leftPointer != null && step.rightPointer != null -> {
+                            val currentElement = step.array[step.rightPointer]
+                            val pivotElement = step.array[step.pivotIndex]
+                            if (step.rightPointer == step.leftPointer) {
+                                if (currentElement < pivotElement) {
+                                    "Элемент $currentElement меньше опорного $pivotElement, " +
+                                            "сдвигаем стену вправо на позицию ${step.leftPointer + 1}"
+                                } else {
+                                    "Элемент $currentElement больше или равен опорному $pivotElement, оставляем его на месте"
+                                }
+                            } else if (currentElement < pivotElement) {
+                                "Элемент $currentElement меньше опорного $pivotElement, " +
+                                        "меняем его местами с элементом ${step.array[step.leftPointer]} на позиции стены"
+                            } else {
+                                "Элемент $currentElement больше или равен опорному $pivotElement, оставляем его на месте"
+                            }
+                        }
+                        else -> {
+                            val (start, end) = step.partitionRange ?: (0 to 0)
+                            "Выбран опорный элемент ${step.array[step.pivotIndex]} из позиции ${step.pivotIndex}. " +
+                                    "Начинаем разделение массива [${start}..${end}]."
                         }
                     }
                 }

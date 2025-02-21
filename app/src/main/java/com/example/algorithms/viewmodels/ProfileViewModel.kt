@@ -1,18 +1,21 @@
 package com.example.algorithms.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.algorithms.data.profile_data.Profile
 import com.example.algorithms.di.chat_api.ProfileApi
-import com.example.algorithms.di.chat_api.UserProfile
 import com.example.algorithms.di.chat_api.UserResponse
-import com.example.algorithms.utils.TokenManager
 import com.example.algorithms.utils.AuthState
-
+import com.example.algorithms.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class ProfileViewModel(
     private val profileApi: ProfileApi,
@@ -53,12 +56,12 @@ class ProfileViewModel(
         }
     }
 
-    fun refreshProfile() {  // Новый метод для принудительного обновления
+    fun refreshProfile() {
         _profileState.value = null
         loadProfile()
     }
 
-    fun clearProfile() {  // Метод для очистки данных при выходе
+    fun clearProfile() {
         _profileState.value = null
         isInitialized = false
     }
@@ -79,44 +82,46 @@ class ProfileViewModel(
             }
         }
     }
+
+    fun updateProfilePicture(uri: Uri) {
+        viewModelScope.launch {
+            try {
+                val token = TokenManager.getToken(application)
+                if (token != null) {
+                    val bearerToken = "Bearer $token"
+                    
+                    val file = getFileFromUri(uri, application)
+                    
+                    val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                    val photoPart = MultipartBody.Part.createFormData(
+                        "file", 
+                        file.name, 
+                        requestFile
+                    )
+                    
+                    val response = profileApi.uploadProfilePhoto(bearerToken, photoPart)
+                    
+                    loadProfile()
+                    
+                } else {
+                    _error.value = "Токен не найден"
+                }
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Ошибка обновления фото профиля"
+            }
+        }
+    }
+
+    private fun getFileFromUri(uri: Uri, context: Context): File {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val file = File(context.cacheDir, "profile_photo_${System.currentTimeMillis()}.jpg")
+        
+        inputStream?.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        
+        return file
+    }
 }
-
-
-
-
-//import androidx.lifecycle.ViewModel
-//import androidx.lifecycle.viewModelScope
-//import com.example.algorithms.data.profile_data.User
-//import com.example.algorithms.di.ApiService
-//import kotlinx.coroutines.flow.MutableStateFlow
-//import kotlinx.coroutines.flow.StateFlow
-//import kotlinx.coroutines.flow.asStateFlow
-//import kotlinx.coroutines.launch
-//
-//class ProfileViewModel(private val apiService: ApiService) : ViewModel() {
-//    private val _user = MutableStateFlow<User?>(null)
-//    val user: StateFlow<User?> = _user.asStateFlow()
-//
-//    private val _isLoading = MutableStateFlow(false)
-//    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-//
-//    private val _error = MutableStateFlow<String?>(null)
-//    val error: StateFlow<String?> = _error.asStateFlow()
-//
-//    fun loadProfile() {
-//        viewModelScope.launch {
-//            _isLoading.value = true
-//            try {
-//                //val token = getStoredToken() // Реализовать получение токена
-//                val token = "123123123"
-//                val userProfile = apiService.getProfile("Bearer $token")
-//                _user.value = userProfile
-//                _error.value = null
-//            } catch (e: Exception) {
-//                _error.value = e.message
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-//}

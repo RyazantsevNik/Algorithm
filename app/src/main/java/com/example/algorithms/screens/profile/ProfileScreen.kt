@@ -1,6 +1,14 @@
 package com.example.algorithms.screens.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,15 +20,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -37,21 +47,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.algorithms.di.chat_api.UserResponse
 import com.example.algorithms.navigation.AppRoutes
-import com.example.algorithms.viewmodels.ProfileViewModel
-import com.example.algorithms.viewmodels.AuthViewModel
-import org.koin.androidx.compose.koinViewModel
-import coil.compose.AsyncImage
-import com.example.algorithms.utils.TokenManager
+import com.example.algorithms.ui.theme.BackgroundBottom
+import com.example.algorithms.ui.theme.BackgroundTop
+import com.example.algorithms.ui.theme.DarkBlue
+import com.example.algorithms.ui.theme.PrimaryBlue
+import com.example.algorithms.ui.theme.SoftBlue
+import com.example.algorithms.ui.theme.SoftOrange
 import com.example.algorithms.utils.AuthState
+import com.example.algorithms.utils.TokenManager
+import com.example.algorithms.viewmodels.AuthViewModel
+import com.example.algorithms.viewmodels.ProfileViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProfileScreen(
@@ -60,10 +81,16 @@ fun ProfileScreen(
     navController: NavController
 ) {
     val profileState by viewModel.profileState.collectAsState()
-    val error by viewModel.error.collectAsState()
+    //val error by viewModel.error.collectAsState()
     val isAuthenticated by AuthState.isAuthenticated.collectAsState()
     var showEditDialog by remember { mutableStateOf(false) }
+    var showImagePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.updateProfilePicture(it) }
+    }
 
     LaunchedEffect(Unit) {
         val token = TokenManager.getToken(context)
@@ -73,129 +100,168 @@ fun ProfileScreen(
             AuthState.setAuthenticated(false)
         }
     }
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(BackgroundTop, BackgroundBottom)
+                )
+            )
     ) {
         if (isAuthenticated) {
-            // Показываем профиль авторизованного пользователя
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(start = 16.dp, top = 62.dp, end = 16.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Аватар и основная информация
-                profileState?.let { user ->
-                    Box(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (user.profile_picture != null) {
-                            AsyncImage(
-                                model = user.profile_picture,
-                                contentDescription = "Аватар",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null,
-                                modifier = Modifier.size(64.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    // Информация профиля
-                    ProfileInfoCard(
-                        title = "Имя пользователя",
-                        value = user.username,
-                        icon = Icons.Default.Person
-                    )
-
-                    ProfileInfoCard(
-                        title = "Email",
-                        value = user.email,
-                        icon = Icons.Default.Email
-                    )
-
-                    user.full_name?.let {
-                        ProfileInfoCard(
-                            title = "Полное имя",
-                            value = it,
-                            icon = Icons.Default.AddCircle
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(SoftBlue)
+                        .clickable { showImagePicker = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    profileState?.profilePicture?.let { url ->
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("http://10.0.2.2:8000${url}")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Фото профиля",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
                         )
-                    }
+                    } ?: Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                Text(
+                    text = profileState?.username ?: "",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.Black,
+                    modifier = Modifier.padding(top = 20.dp, bottom = 46.dp)
+                )
 
-                    // Кнопка редактирования
+
+                val x = 0.7F
+                LearningProgress(x)
+
+
+                Spacer(modifier = Modifier.weight(1f))  
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp), 
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Button(
                         onClick = { showEditDialog = true },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp)
+                            .height(56.dp), 
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PrimaryBlue
+                        ),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         Icon(
                             Icons.Default.Edit,
                             contentDescription = null,
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text("Редактировать профиль")
+                        Text(
+                            "Редактировать профиль",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
 
-                    // Кнопка выхода
-                    OutlinedButton(
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = { /* TODO */ },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(56.dp), 
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = PrimaryBlue
+                            ),
+                            border = BorderStroke(1.dp, PrimaryBlue),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Code,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text(
+                                "GitHub",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
+                        OutlinedButton(
+                            onClick = { /* TODO */ },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(56.dp), 
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = PrimaryBlue
+                            ),
+                            border = BorderStroke(1.dp, PrimaryBlue),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Info,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text(
+                                "Справка",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                    
+                    Button(
                         onClick = {
                             authViewModel.logout {
-                                viewModel.clearProfile() // Очищаем данные профиля
-                                navController.navigate(AppRoutes.AUTH_SCREEN) {
-                                    popUpTo(AppRoutes.HOME) { inclusive = true }
+                                navController.navigate("auth") {
+                                    popUpTo("main") { inclusive = true }
                                 }
                             }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
-                            .height(50.dp)
+                            .height(56.dp), 
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SoftOrange
+                        ),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         Icon(
-                            Icons.Default.AddCircle,
+                            Icons.AutoMirrored.Filled.ExitToApp,
                             contentDescription = null,
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text("Выйти из аккаунта")
+                        Text(
+                            "Выйти",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
-                }
-
-                if (error != null) {
-                    Text(
-                        text = error ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
-                }
-
-                if (profileState == null && error == null) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
                 }
             }
         } else {
-            // Показываем экран для неавторизованного пользователя
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -209,15 +275,15 @@ fun ProfileScreen(
                     modifier = Modifier
                         .size(100.dp)
                         .padding(bottom = 16.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = DarkBlue
                 )
-                
+
                 Text(
                     "Войдите в аккаунт",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
-                
+
                 Text(
                     "Чтобы получить доступ к профилю и отслеживать свой прогресс",
                     style = MaterialTheme.typography.bodyMedium,
@@ -231,7 +297,11 @@ fun ProfileScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(50.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = DarkBlue
+                    ),
+                    border = BorderStroke(1.dp, DarkBlue)
                 ) {
                     Text("Войти в аккаунт")
                 }
@@ -240,74 +310,40 @@ fun ProfileScreen(
     }
 
     if (showEditDialog) {
-        profileState?.let { user ->
-            EditProfileDialog(
-                user = user,
-                onDismiss = { showEditDialog = false },
-                onSave = { updatedProfile ->
-                    viewModel.updateProfile(updatedProfile)
-                    showEditDialog = false
-                }
-            )
-        }
+        EditProfileDialog(
+            user = profileState!!,
+            onDismiss = { showEditDialog = false },
+            onSave = { updatedProfile ->
+                viewModel.updateProfile(updatedProfile)
+                showEditDialog = false
+            }
+        )
+    }
+
+    if (showImagePicker) {
+        launcher.launch("image/*")
+        showImagePicker = false
     }
 }
 
-@Composable
-fun ProfileInfoCard(
-    title: String,
-    value: String,
-    icon: ImageVector
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(end = 16.dp)
-            )
-            Column {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                Text(
-                    text = value,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun EditProfileDialog(
-    user: UserResponse,
+    user: UserResponse,  
     onDismiss: () -> Unit,
-    onSave: (UserResponse) -> Unit
+    onSave: (UserResponse) -> Unit  
 ) {
     var username by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
-    var fullName by remember { mutableStateOf(user.full_name ?: "") }
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -316,7 +352,7 @@ fun EditProfileDialog(
             ) {
                 Text(
                     "Редактировать профиль",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -338,15 +374,6 @@ fun EditProfileDialog(
                         .padding(vertical = 8.dp)
                 )
 
-                OutlinedTextField(
-                    value = fullName,
-                    onValueChange = { fullName = it },
-                    label = { Text("Полное имя") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                )
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -359,10 +386,11 @@ fun EditProfileDialog(
                     Button(
                         onClick = {
                             onSave(
-                                user.copy(
+                                UserResponse(
+                                    id = user.id,
                                     username = username,
                                     email = email,
-                                    full_name = fullName.ifEmpty { null }
+                                    profilePicture = user.profilePicture
                                 )
                             )
                         },
@@ -373,5 +401,56 @@ fun EditProfileDialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LearningProgress(progress: Float) {
+    val animatedProgress = remember { Animatable(0f) }
+
+    LaunchedEffect(progress) {
+        animatedProgress.animateTo(
+            targetValue = progress,
+            animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(SoftBlue)
+                .shadow(elevation = 4.dp, shape = RoundedCornerShape(6.dp))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(fraction = animatedProgress.value)
+                    .height(12.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            listOf(Color(0xFF4A90E2), Color(0xFF007AFF))
+                        )
+                    )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Прогресс обучения: ${(progress * 100).toInt()}%",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            ),
+            color = Color(0xFF007AFF),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
     }
 }

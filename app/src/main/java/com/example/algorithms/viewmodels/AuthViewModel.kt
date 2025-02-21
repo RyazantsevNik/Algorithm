@@ -1,25 +1,21 @@
 package com.example.algorithms.viewmodels
 
 import android.app.Application
-import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.algorithms.di.chat_api.AuthApi
 import com.example.algorithms.di.chat_api.LoginRequest
+import com.example.algorithms.di.chat_api.ProfileApi
 import com.example.algorithms.di.chat_api.RegisterRequest
 import com.example.algorithms.di.chat_api.UserResponse
-import com.example.algorithms.di.chat_api.ProfileApi
-import com.example.algorithms.navigation.AppRoutes
-import com.example.algorithms.utils.TokenManager
 import com.example.algorithms.utils.AuthState
+import com.example.algorithms.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 sealed class AuthResult {
-    object Loading : AuthResult()
+    data object Loading : AuthResult()
     data class Success(
         val user: UserResponse,
         val token: String
@@ -42,11 +38,11 @@ class AuthViewModel(
                 val response = authApi.register(
                     RegisterRequest(username, email, password)
                 )
-                TokenManager.saveToken(application, response.access_token)
+                TokenManager.saveToken(application, response.accessToken)
                 AuthState.setAuthenticated(true)
                 _authResult.value = AuthResult.Success(
                     user = response.user,
-                    token = response.access_token
+                    token = response.accessToken
                 )
             } catch (e: Exception) {
                 _authResult.value = AuthResult.Error(e.message ?: "Неизвестная ошибка")
@@ -60,13 +56,13 @@ class AuthViewModel(
                 _authResult.value = AuthResult.Loading
                 val loginResponse = authApi.login(LoginRequest(username, password))
                 
-                TokenManager.saveToken(application, loginResponse.access_token)
-                val userProfile = profileApi.getProfile("Bearer ${loginResponse.access_token}")
+                TokenManager.saveToken(application, loginResponse.accessToken)
+                val userProfile = profileApi.getProfile("Bearer ${loginResponse.accessToken}")
                 
                 AuthState.setAuthenticated(true)
                 _authResult.value = AuthResult.Success(
                     user = userProfile,
-                    token = loginResponse.access_token
+                    token = loginResponse.accessToken
                 )
             } catch (e: Exception) {
                 AuthState.setAuthenticated(false)
@@ -88,15 +84,4 @@ class AuthViewModel(
         }
     }
 
-//    private fun saveAuthToken(token: String) {
-//        context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-//            .edit()
-//            .putString("auth_token", token)
-//            .apply()
-//    }
-
-    private fun saveToken(token: String) {
-        // TODO: Сохранить токен в SharedPreferences
-        // Это нужно будет реализовать позже
-    }
 }
