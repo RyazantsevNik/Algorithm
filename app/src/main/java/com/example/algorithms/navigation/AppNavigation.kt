@@ -20,6 +20,7 @@ import com.example.algorithms.screens.selection.PracticeScreen
 import com.example.algorithms.screens.selection.TheoryScreen
 import com.example.algorithms.screens.sorting.BubbleSortingLearningScreen
 import com.example.algorithms.screens.sorting.InsertionSortingLearningScreen
+import com.example.algorithms.screens.sorting.SelectionSortingVisualizationScreen
 import com.example.algorithms.screens.sorting.SortingSelectionLearningScreen
 import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
 
@@ -101,6 +102,7 @@ fun AppNavigation() {
                 val algorithmTitle = backStackEntry.arguments?.getString("algorithmTitle") ?: "Алгоритм"
                 when (algorithmTitle) {
                     "Сортировка пузырьком" -> BubbleSortingVisualizationScreen(navController)
+                    "Сортировка выбором" -> SelectionSortingVisualizationScreen(navController)
                     // TODO Добавьте другие практики алгоритмов здесь
 
                     else -> PracticeScreen(navController, algorithmTitle)

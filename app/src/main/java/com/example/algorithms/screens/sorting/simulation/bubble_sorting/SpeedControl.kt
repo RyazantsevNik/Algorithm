@@ -9,10 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.algorithms.viewmodels.BubbleSortViewModel
+import com.example.algorithms.viewmodels.base_class_for_simulation.SortingViewModel
 
 @Composable
-fun SpeedControl(viewModel: BubbleSortViewModel) {
+fun SpeedControl(viewModel: SortingViewModel) {
     val state by viewModel.state.collectAsState()
 
     Column(
@@ -30,8 +30,9 @@ fun SpeedControl(viewModel: BubbleSortViewModel) {
             valueRange = 0f..1f,
             steps = 9,
             thumbDisplay = { value ->
-                val percentage = (value * 100).toInt()
-                if (percentage == 100) "100" else "$percentage%"
+                val fixedValues = listOf(5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+                val index = (value * fixedValues.size).toInt().coerceIn(0, fixedValues.size - 1)
+                if (index == 10) "100" else "${fixedValues[index]}%"
             }
         )
     }

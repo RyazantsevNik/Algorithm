@@ -17,10 +17,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
-import com.example.algorithms.viewmodels.BubbleSortViewModel
+import com.example.algorithms.viewmodels.base_class_for_simulation.SortingViewModel
 
 @Composable
-fun GraphicAnimation(viewModel: BubbleSortViewModel){
+fun GraphicAnimation(viewModel: SortingViewModel){
     val state by viewModel.state.collectAsState()
     // Графическая анимация сортировки
     Canvas(

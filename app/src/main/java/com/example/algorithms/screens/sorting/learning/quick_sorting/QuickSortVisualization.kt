@@ -35,7 +35,7 @@ fun QuickSortVisualization(step: QuickSortStep) {
 
     val elementStates = step.array.indices.map { index ->
         ElementState(
-            isSorted = step.sortedIndices?.contains(index) ?: false,
+            isSorted = step.sortedIndices.contains(index) ?: false,
             isPivot = index == step.pivotIndex,
             isWall = index == step.leftPointer,
             isCurrent = index == step.rightPointer,

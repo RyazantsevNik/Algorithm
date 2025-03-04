@@ -18,6 +18,7 @@ val appModule = module {
     viewModel { AuthViewModel(get(), get(), get()) }
     viewModel { MenuViewModel() }
     viewModel { BubbleSortViewModel() }
+    viewModel { SelectionSortViewModel() }
     viewModel { BubbleSortStepViewModel() }
     viewModel { SelectionSortStepViewModel() }
     viewModel { InsertionSortStepViewModel() }

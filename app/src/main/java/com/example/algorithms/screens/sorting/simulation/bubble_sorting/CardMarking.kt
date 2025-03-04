@@ -21,10 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.algorithms.viewmodels.BubbleSortViewModel
+import com.example.algorithms.viewmodels.base_class_for_simulation.SortingViewModel
 
 @Composable
-fun CardMarking(viewModel: BubbleSortViewModel){
+fun CardMarking(viewModel: SortingViewModel){
     val state by viewModel.state.collectAsState()
     Row(
         modifier = Modifier
