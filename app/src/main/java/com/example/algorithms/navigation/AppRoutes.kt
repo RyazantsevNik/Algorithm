@@ -6,6 +6,7 @@ object AppRoutes {
     const val AI_CHAT = "ai_chat"
     const val PROFILE = "profile"
     const val AUTH_SCREEN = "auth_screen"
+    const val HELP_SCREEN = "help_screen"
 
     // Подмаршруты
     private const val ALGORITHM_SELECTION_BASE = "algorithm_selection"

@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,8 +74,13 @@ dependencies {
     implementation ("io.coil-kt:coil-compose:2.5.0")
 
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation ("io.coil-kt:coil-compose:2.2.2")
 
     implementation ("androidx.compose.material:material-icons-extended:1.5.4")
+
+    //Markdown
+    implementation("io.noties.markwon:core:4.6.2")
+
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.algorithms.di
 
+import com.example.algorithms.di.ai_chat.ChatApi
 import com.example.algorithms.di.chat_api.ApiClient
 import com.example.algorithms.di.chat_api.AuthApi
 import com.example.algorithms.di.chat_api.ProfileApi
@@ -13,6 +14,7 @@ val appModule = module {
     single { ApiClient.retrofit.create(AuthApi::class.java) }
     single { ApiClient.retrofit.create(ProfileApi::class.java) }
     single { ApiClient.retrofit.create(ProgressApi::class.java) }
+    single { ApiClient.retrofit.create(ChatApi::class.java) }  //chat
 
     // ViewModels
     viewModel { AuthViewModel(get(), get(), get()) }
@@ -24,4 +26,5 @@ val appModule = module {
     viewModel { InsertionSortStepViewModel() }
     viewModel { QuickSortStepViewModel() }
     viewModel { ProfileViewModel(get(), get()) }
+    viewModel { ChatViewModel(get(), get(), get()) }              //chat
 }

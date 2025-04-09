@@ -101,7 +101,8 @@ class ProfileViewModel(
                     
                     val response = profileApi.uploadProfilePhoto(bearerToken, photoPart)
                     
-                    loadProfile()
+                    //loadProfile()
+                    refreshProfile()
                     
                 } else {
                     _error.value = "Токен не найден"
@@ -123,5 +124,9 @@ class ProfileViewModel(
         }
         
         return file
+    }
+
+    fun getAuthToken(): String {
+        return TokenManager.getToken(application) ?: throw IllegalStateException("Токен не найден")
     }
 }

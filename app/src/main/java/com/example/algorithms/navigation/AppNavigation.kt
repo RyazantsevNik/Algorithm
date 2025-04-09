@@ -10,10 +10,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import com.example.algorithms.screens.auth.AuthScreen
+import com.example.algorithms.screens.chat.ChatScreen
 import com.example.algorithms.screens.selection.AlgorithmSelectionScreen
 import com.example.algorithms.screens.menu.AlgorithmsMenuScreen
 import com.example.algorithms.screens.menu.HomeScreen
+import com.example.algorithms.screens.profile.HelpScreen
 import com.example.algorithms.screens.profile.ProfileScreen
 import com.example.algorithms.screens.sorting.BubbleSortingVisualizationScreen
 import com.example.algorithms.screens.selection.PracticeScreen
@@ -46,9 +49,11 @@ fun AppNavigation() {
                 AlgorithmsMenuScreen(navController)
             }
 
+            // ✅ Создаём граф для чата
             composable(AppRoutes.AI_CHAT) {
-                //AIChatScreen(navController)
+                ChatScreen(navController)
             }
+
 
             composable(AppRoutes.PROFILE) {
                 ProfileScreen(navController = navController)
@@ -60,12 +65,17 @@ fun AppNavigation() {
                 )
             }
 
+            composable(AppRoutes.HELP_SCREEN) {
+                HelpScreen(navController = navController)
+            }
+
             // Экран выбора теории/практики
             composable(
                 route = AppRoutes.ALGORITHM_SELECTION,
                 arguments = listOf(navArgument("algorithmTitle") { type = NavType.StringType })
             ) { backStackEntry ->
-                val algorithmTitle = backStackEntry.arguments?.getString("algorithmTitle") ?: "Алгоритм"
+                val algorithmTitle =
+                    backStackEntry.arguments?.getString("algorithmTitle") ?: "Алгоритм"
                 AlgorithmSelectionScreen(
                     algorithmTitle = algorithmTitle,
                     navController = navController,
@@ -82,7 +92,8 @@ fun AppNavigation() {
                 route = AppRoutes.THEORY_SCREEN,
                 arguments = listOf(navArgument("algorithmTitle") { type = NavType.StringType })
             ) { backStackEntry ->
-                val algorithmTitle = backStackEntry.arguments?.getString("algorithmTitle") ?: "Алгоритм"
+                val algorithmTitle =
+                    backStackEntry.arguments?.getString("algorithmTitle") ?: "Алгоритм"
                 when (algorithmTitle) {
                     "Сортировка пузырьком" -> BubbleSortingLearningScreen(navController)
                     "Сортировка выбором" -> SortingSelectionLearningScreen(navController)
@@ -99,7 +110,8 @@ fun AppNavigation() {
                 route = AppRoutes.PRACTISE_SCREEN,
                 arguments = listOf(navArgument("algorithmTitle") { type = NavType.StringType })
             ) { backStackEntry ->
-                val algorithmTitle = backStackEntry.arguments?.getString("algorithmTitle") ?: "Алгоритм"
+                val algorithmTitle =
+                    backStackEntry.arguments?.getString("algorithmTitle") ?: "Алгоритм"
                 when (algorithmTitle) {
                     "Сортировка пузырьком" -> BubbleSortingVisualizationScreen(navController)
                     "Сортировка выбором" -> SelectionSortingVisualizationScreen(navController)

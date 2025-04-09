@@ -1,5 +1,7 @@
 package com.example.algorithms.screens.profile
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -7,6 +9,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,24 +22,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.SupportAgent
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,14 +69,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.algorithms.R
 import com.example.algorithms.di.chat_api.UserResponse
 import com.example.algorithms.navigation.AppRoutes
 import com.example.algorithms.ui.theme.BackgroundBottom
@@ -94,6 +114,7 @@ fun ProfileScreen(
 
     LaunchedEffect(Unit) {
         val token = TokenManager.getToken(context)
+        println("ТОКЕН = $token")
         if (token != null) {
             viewModel.loadProfile()
         } else {
@@ -189,7 +210,11 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         OutlinedButton(
-                            onClick = { /* TODO */ },
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RyazantsevNik/Algorithm.git"))
+                                // Используем context для вызова startActivity
+                                context.startActivity(intent)
+                            },
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp), 
@@ -211,7 +236,7 @@ fun ProfileScreen(
                         }
 
                         OutlinedButton(
-                            onClick = { /* TODO */ },
+                            onClick = { navController.navigate("help_screen") },
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp), 
@@ -453,4 +478,206 @@ fun LearningProgress(progress: Float) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HelpScreen(navController: NavController) {
+    val context = LocalContext.current
+    val appVersion = remember { getAppVersion(context) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                title = { Text("Справка") },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = SoftBlue
+                )
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Логотип приложения
+            Image(
+                painter = painterResource(id = R.drawable.logo_for_app),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .size(180.dp)
+                    .padding(vertical = 24.dp)
+            )
+
+            // Основные разделы справки
+            HelpSection(title = "Основные функции") {
+                Text(
+                    text = "• Интерактивные уроки по алгоритмам\n" +
+                            "• Симуляция работы алгоритмов с тонкой настройкой\n" +
+                            "• Возможность общения с ИИ\n" +
+                            "• Система прогресса в личном профиле",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            HelpSection(title = "Как начать работу") {
+                Column {
+                    Text(
+                        text = "1. Зарегистрируйтесь или войдите в аккаунт\n" +
+                                "2. Выберите курс в разделе 'Алгоритмы'\n" +
+                                "3. Обучайтесь алгоритмам и получайте мгновенный фидбэк\n" +
+                                "4. Попробуйте настроить и запустить собственную симуляцию алгоритма\n" +
+                                "5. При возникновении вопросов, спросите их у Ai чата\n" +
+                                "6. Отслеживайте прогресс в личном кабинете",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            HelpSection(title = "Часто задаваемые вопросы") {
+                ExpandableFAQ(
+                    question = "Как сбросить прогресс?",
+                    answer = "Перейдите в настройки профиля и выберите 'Сбросить прогресс'"
+                )
+                ExpandableFAQ(
+                    question = "Какая нейросеть используется в Ai чат?",
+                    answer = "Для чата с нейросетью используется LLM модель - DeepSeek-R1"
+                )
+                ExpandableFAQ(
+                    question = "Как связаться с разработчиками?",
+                    answer = "Нажмите кнопку 'Написать в поддержку' ниже или напишите на ryazantsevnikita8@gmail.com"
+                )
+            }
+
+            // Блок с информацией о приложении
+            HelpSection(title = "") {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp), thickness = 1.dp)
+                    Text(
+                        text = "Версия $appVersion",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "© 2025 Nikita Ryazantsev",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            // Кнопка поддержки
+            Button(
+                onClick = { context.openSupportEmail() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(
+                    Icons.Outlined.SupportAgent,
+                    contentDescription = "Support",
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                )
+                Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                Text("Написать в поддержку")
+            }
+        }
+    }
+}
+
+// Вспомогательные компоненты
+@Composable
+private fun HelpSection(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = DarkBlue
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        content()
+    }
+}
+
+@Composable
+private fun ExpandableFAQ(question: String, answer: String) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        onClick = { expanded = !expanded }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = question,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                    contentDescription = "Expand"
+                )
+            }
+            if (expanded) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = answer,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+    }
+}
+
+// Расширения для работы с контекстом
+private fun getAppVersion(context: Context): String {
+    return try {
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        packageInfo.versionName ?: "1.0.0" // Обработка nullable значения
+    } catch (e: Exception) {
+        "1.0.0"
+    }
+}
+
+private fun Context.openSupportEmail() {
+    val intent = Intent(Intent.ACTION_SENDTO).apply {
+        data = Uri.parse("mailto:ryazantsevnikita8@gmail.com")
+        putExtra(Intent.EXTRA_SUBJECT, "Вопрос по приложению")
+    }
+    startActivity(Intent.createChooser(intent, "Выберите почтовый клиент"))
 }
