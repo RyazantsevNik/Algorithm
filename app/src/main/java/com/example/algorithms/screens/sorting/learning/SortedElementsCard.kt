@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.algorithms.viewmodels.BaseSortStepViewModel
-import com.example.algorithms.viewmodels.BubbleSortStepViewModel
-import com.example.algorithms.viewmodels.InsertionSortStepViewModel
-import com.example.algorithms.viewmodels.SelectionSortStepViewModel
-import com.example.algorithms.viewmodels.QuickSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.base_class_for_step.BaseSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.InsertionSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.SelectionSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.QuickSortStepViewModel
 
 @Composable
 fun SortedElementsCard(viewModel: BaseSortStepViewModel) {

@@ -23,8 +23,8 @@ import com.example.algorithms.ui.theme.ErrorRed
 import com.example.algorithms.ui.theme.LightBlue
 import com.example.algorithms.ui.theme.PrimaryBlue
 import com.example.algorithms.utils.Validators
-import com.example.algorithms.viewmodels.AuthResult
-import com.example.algorithms.viewmodels.AuthViewModel
+import com.example.algorithms.viewmodels.profile.AuthResult
+import com.example.algorithms.viewmodels.profile.AuthViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff

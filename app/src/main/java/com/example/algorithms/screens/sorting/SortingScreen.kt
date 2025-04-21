@@ -8,6 +8,7 @@ import com.example.algorithms.screens.sorting.learning.insertion_sorting.Inserti
 import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
 import com.example.algorithms.screens.sorting.simulation.bubble_sorting.BubbleSortingSimulation
 import com.example.algorithms.screens.sorting.learning.selection_sorting.SelectionSortingLearning
+import com.example.algorithms.screens.sorting.simulation.insertion_sorting.InsertionSortingSimulation
 import com.example.algorithms.screens.sorting.simulation.selection_sorting.SelectionSortingSimulation
 
 @Composable
@@ -57,6 +58,16 @@ fun InsertionSortingLearningScreen(navController: NavHostController) {
         navController = navController
     ) {
         InsertionSortingLearning()
+    }
+}
+
+@Composable
+fun InsertionSortingVisualizationScreen(navController: NavHostController) {
+    AlgorithmScreen(
+        title = "Сортировка вставками",
+        navController = navController
+    ) {
+        InsertionSortingSimulation()
     }
 }
 

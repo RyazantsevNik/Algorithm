@@ -1,13 +1,13 @@
-package com.example.algorithms.viewmodels
+package com.example.algorithms.viewmodels.profile
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.algorithms.di.chat_api.AuthApi
-import com.example.algorithms.di.chat_api.LoginRequest
-import com.example.algorithms.di.chat_api.ProfileApi
-import com.example.algorithms.di.chat_api.RegisterRequest
-import com.example.algorithms.di.chat_api.UserResponse
+import com.example.algorithms.di.main_api.AuthApi
+import com.example.algorithms.di.main_api.LoginRequest
+import com.example.algorithms.di.main_api.ProfileApi
+import com.example.algorithms.di.main_api.RegisterRequest
+import com.example.algorithms.di.main_api.UserResponse
 import com.example.algorithms.utils.AuthState
 import com.example.algorithms.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow

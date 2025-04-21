@@ -1,4 +1,4 @@
-package com.example.algorithms.viewmodels
+package com.example.algorithms.viewmodels.step_sorting.base_class_for_step
 
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.getValue

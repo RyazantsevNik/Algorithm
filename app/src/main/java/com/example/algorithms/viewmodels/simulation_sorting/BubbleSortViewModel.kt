@@ -1,6 +1,6 @@
-package com.example.algorithms.viewmodels
+package com.example.algorithms.viewmodels.simulation_sorting
 
-import com.example.algorithms.viewmodels.base_class_for_simulation.SortingViewModel
+import com.example.algorithms.viewmodels.simulation_sorting.base_class_for_simulation.SortingViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

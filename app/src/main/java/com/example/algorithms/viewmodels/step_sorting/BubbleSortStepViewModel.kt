@@ -1,7 +1,8 @@
-package com.example.algorithms.viewmodels
+package com.example.algorithms.viewmodels.step_sorting
 
 import com.example.algorithms.data.BubbleSortStep
 import com.example.algorithms.data.SortStep
+import com.example.algorithms.viewmodels.step_sorting.base_class_for_step.BaseSortStepViewModel
 
 class BubbleSortStepViewModel : BaseSortStepViewModel() {
 

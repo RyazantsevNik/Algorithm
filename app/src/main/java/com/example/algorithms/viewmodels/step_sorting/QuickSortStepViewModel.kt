@@ -1,7 +1,8 @@
-package com.example.algorithms.viewmodels
+package com.example.algorithms.viewmodels.step_sorting
 
 import com.example.algorithms.data.QuickSortStep
 import com.example.algorithms.data.SortStep
+import com.example.algorithms.viewmodels.step_sorting.base_class_for_step.BaseSortStepViewModel
 
 class QuickSortStepViewModel : BaseSortStepViewModel() {
     private val initialArray = listOf(5, 2, 8, 10, 6, 1, 3, 4)

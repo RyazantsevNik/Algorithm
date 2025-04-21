@@ -1,19 +1,24 @@
-package com.example.algorithms.viewmodels.base_class_for_simulation
+package com.example.algorithms.viewmodels.simulation_sorting.base_class_for_simulation
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.algorithms.data.SortingState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class SortingViewModel : ViewModel() {
+
     protected val _state = MutableStateFlow(SortingState())
     val state: StateFlow<SortingState> = _state.asStateFlow()
 
@@ -23,7 +28,7 @@ abstract class SortingViewModel : ViewModel() {
         reset()
     }
 
-    private fun updateProgress() {
+    fun updateProgress() {
         val listSize = _state.value.list.size
         val totalComparisons = if (listSize > 1) (listSize * (listSize - 1)) / 2 else 0
         val currentComparisons = if (_state.value.i > 0) {
@@ -31,13 +36,7 @@ abstract class SortingViewModel : ViewModel() {
         } else {
             _state.value.j
         }
-
-        val progress = if (totalComparisons > 0) {
-            (currentComparisons.toFloat() / totalComparisons) * 100
-        } else {
-            0f
-        }
-
+        val progress = (currentComparisons.toFloat() / totalComparisons) * 100
         _state.update { it.copy(progress = progress.coerceIn(0f, 100f)) }
     }
 
@@ -61,7 +60,9 @@ abstract class SortingViewModel : ViewModel() {
                     j = 0,
                     isRunning = false,
                     isPaused = false,
-                    progress = 0f
+                    progress = 0f,
+                    keyIndex = null,
+                    keyValue = null
                 )
             }
             updateAnimatedOffsets(newList.size)
@@ -82,7 +83,9 @@ abstract class SortingViewModel : ViewModel() {
                 isPaused = false,
                 progress = 0f,
                 minIndex = -1,
-                currentComparisonIndex = -1
+                currentComparisonIndex = -1,
+                keyIndex = null,
+                keyValue = null,
             )
         }
         updateAnimatedOffsets(newList.size)
@@ -107,7 +110,12 @@ abstract class SortingViewModel : ViewModel() {
                 j = 0,
                 isRunning = false,
                 isPaused = true,
-                progress = 0f
+                progress = 0f,
+                isSortingComplete = false,
+                minIndex = -1,
+                currentComparisonIndex = -1,
+                keyIndex = null,
+                keyValue = null
             )
         }
     }
@@ -173,26 +181,74 @@ abstract class SortingViewModel : ViewModel() {
         updateAnimatedOffsets(newSize)
     }
 
-                                                                                                        //Анимация для смены в сорт выбором
-
-
 
 
     suspend fun swapWithAnimation(index1: Int, index2: Int) {
         if (index1 == index2) return
 
-        val barWidth = 1f // Предполагаемая ширина одного столбца (в относительных единицах)
-        val horizontalOffsetDistance = barWidth * (index2 - index1).toFloat() // Расстояние для горизонтального перемещения
-        // Этап 2: Горизонтальное перемещение
+        val barWidth = 1f
+        val horizontalOffsetDistance = barWidth * (index2 - index1).toFloat()
+
+
         coroutineScope {
             launch {
-                animatedOffsets[index1].animateTo(horizontalOffsetDistance, animationSpec = tween(_state.value.delayTime.toInt()))
+                animatedOffsets[index1].animateTo(
+                    horizontalOffsetDistance,
+                    tween(_state.value.delayTime.toInt())
+                )
             }
             launch {
-                animatedOffsets[index2].animateTo(-horizontalOffsetDistance, animationSpec = tween(_state.value.delayTime.toInt()))
-            }
+                animatedOffsets[index2].animateTo(
+                    -horizontalOffsetDistance,
+                    tween(_state.value.delayTime.toInt())
+                )
+            }.join()
+
+            val newList = _state.value.list.toMutableList()
+            val temp = newList[index1]
+            newList[index1] = newList[index2]
+            newList[index2] = temp
+
+
+            _state.update { it.copy(list = newList) }
+
+            animatedOffsets[index1].snapTo(0f)
+            animatedOffsets[index2].snapTo(0f)
         }
-        animatedOffsets[index1].snapTo(0f)
-        animatedOffsets[index2].snapTo(0f)
     }
+
+    //norm
+//    suspend fun swapWithAnimation(index1: Int, index2: Int) {
+//        if (index1 == index2) return
+//
+//        val barWidth = 1f
+//        val horizontalOffsetDistance = barWidth * (index2 - index1).toFloat()
+//
+//        coroutineScope {
+//            launch {
+//                animatedOffsets[index1].animateTo(
+//                    horizontalOffsetDistance,
+//                    tween(_state.value.delayTime.toInt())
+//                )
+//            }
+//            launch {
+//                animatedOffsets[index2].animateTo(
+//                    -horizontalOffsetDistance,
+//                    tween(_state.value.delayTime.toInt())
+//                )
+//            }.join()
+//
+//            val newList = _state.value.list.toMutableList()
+//            val temp = newList[index1]
+//            newList[index1] = newList[index2]
+//            newList[index2] = temp
+//
+//            _state.update { it.copy(list = newList) }
+//
+//            animatedOffsets[index1].snapTo(0f)
+//            animatedOffsets[index2].snapTo(0f)
+//        }
+//    }
+
+
 }

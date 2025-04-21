@@ -1,5 +1,6 @@
 package com.example.algorithms.navigation
 
+import InfoScreen
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -23,6 +24,7 @@ import com.example.algorithms.screens.selection.PracticeScreen
 import com.example.algorithms.screens.selection.TheoryScreen
 import com.example.algorithms.screens.sorting.BubbleSortingLearningScreen
 import com.example.algorithms.screens.sorting.InsertionSortingLearningScreen
+import com.example.algorithms.screens.sorting.InsertionSortingVisualizationScreen
 import com.example.algorithms.screens.sorting.SelectionSortingVisualizationScreen
 import com.example.algorithms.screens.sorting.SortingSelectionLearningScreen
 import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
@@ -57,6 +59,10 @@ fun AppNavigation() {
 
             composable(AppRoutes.PROFILE) {
                 ProfileScreen(navController = navController)
+            }
+
+            composable(AppRoutes.INFO) {
+                InfoScreen(onBackClick = { navController.popBackStack() })
             }
 
             composable(AppRoutes.AUTH_SCREEN) {
@@ -115,6 +121,7 @@ fun AppNavigation() {
                 when (algorithmTitle) {
                     "Сортировка пузырьком" -> BubbleSortingVisualizationScreen(navController)
                     "Сортировка выбором" -> SelectionSortingVisualizationScreen(navController)
+                    "Сортировка вставками" -> InsertionSortingVisualizationScreen(navController)
                     // TODO Добавьте другие практики алгоритмов здесь
 
                     else -> PracticeScreen(navController, algorithmTitle)

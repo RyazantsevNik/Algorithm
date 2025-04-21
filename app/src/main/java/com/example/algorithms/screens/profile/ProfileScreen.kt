@@ -3,6 +3,7 @@ package com.example.algorithms.screens.profile
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,8 +32,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -42,6 +45,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -68,19 +73,24 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.algorithms.R
-import com.example.algorithms.di.chat_api.UserResponse
+import com.example.algorithms.di.main_api.UserResponse
+import com.example.algorithms.di.main_api.UserUpdateRequest
 import com.example.algorithms.navigation.AppRoutes
 import com.example.algorithms.ui.theme.BackgroundBottom
 import com.example.algorithms.ui.theme.BackgroundTop
@@ -90,8 +100,8 @@ import com.example.algorithms.ui.theme.SoftBlue
 import com.example.algorithms.ui.theme.SoftOrange
 import com.example.algorithms.utils.AuthState
 import com.example.algorithms.utils.TokenManager
-import com.example.algorithms.viewmodels.AuthViewModel
-import com.example.algorithms.viewmodels.ProfileViewModel
+import com.example.algorithms.viewmodels.profile.AuthViewModel
+import com.example.algorithms.viewmodels.profile.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -100,21 +110,20 @@ fun ProfileScreen(
     authViewModel: AuthViewModel = koinViewModel(),
     navController: NavController
 ) {
+    var expanded by remember { mutableStateOf(false) } // Для отображения меню
     val profileState by viewModel.profileState.collectAsState()
-    //val error by viewModel.error.collectAsState()
     val isAuthenticated by AuthState.isAuthenticated.collectAsState()
     var showEditDialog by remember { mutableStateOf(false) }
     var showImagePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { viewModel.updateProfilePicture(it) }
-    }
+    ) { uri: Uri? -> uri?.let { viewModel.updateProfilePicture(it) } }
+
+    var menuOffset by remember { mutableStateOf(DpOffset.Zero) }
 
     LaunchedEffect(Unit) {
         val token = TokenManager.getToken(context)
-        println("ТОКЕН = $token")
         if (token != null) {
             viewModel.loadProfile()
         } else {
@@ -122,6 +131,9 @@ fun ProfileScreen(
         }
     }
 
+    val density = LocalDensity.current.density
+
+    // Переместим вычисление menuOffset в onGloballyPositioned внутри Box
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -138,12 +150,22 @@ fun ProfileScreen(
                     .padding(start = 16.dp, top = 62.dp, end = 16.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Box для фото профиля
                 Box(
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)
                         .background(SoftBlue)
-                        .clickable { showImagePicker = true },
+                        .clickable { expanded = true } // Открыть меню при нажатии
+                        .onGloballyPositioned { layoutCoordinates ->
+                            // Вычисляем позицию меню относительно фото
+                            val photoBoxBounds = layoutCoordinates.boundsInRoot()
+                            // Преобразуем пиксели в dp с использованием LocalDensity
+                            menuOffset = DpOffset(
+                                x = (photoBoxBounds.left / density).dp,
+                                y = (photoBoxBounds.bottom / density).dp
+                            )
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     profileState?.profilePicture?.let { url ->
@@ -162,7 +184,61 @@ fun ProfileScreen(
                         modifier = Modifier.size(60.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+
+                    // Иконка карандаша
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Редактировать фото",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .align(Alignment.BottomEnd)
+                            .offset(x = (-12).dp, y = (-8).dp) // Смещение внутрь круга
+                            .clickable { expanded = true } // Открытие меню
+                            .background(Color.White, CircleShape) // Белый фон с округлыми углами
+                            .padding(4.dp), // Немного отступа для создания эффекта окружности
+                        tint = Color.Black // Черный цвет иконки
+                    )
                 }
+
+                // Всплывающее меню для изменения и удаления фото
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    offset = menuOffset.copy(
+                        // Корректируем смещение по оси X и Y для точного позиционирования
+                        x = menuOffset.x - 20.dp,
+                        y = if (profileState?.profilePicture != null) {
+                            menuOffset.y + 52.dp // Когда есть фото, смещаем вниз для двух элементов
+                        } else {
+                            menuOffset.y + 10.dp // Когда фото нет, немного выше, чтобы избежать большого пробела
+                        }
+                    )
+                ) {
+                    // Пункт "Изменить фото"
+                    DropdownMenuItem(
+                        text = { Text("Изменить фото") },
+                        onClick = {
+                            // Логика для изменения фото
+                            showImagePicker = true
+                            expanded = false
+                        }
+                    )
+
+                    // Пункт "Удалить фото"
+                    if (profileState?.profilePicture != null) {
+                        DropdownMenuItem(
+                            text = { Text("Удалить фото") },
+                            onClick = {
+                                viewModel.deleteProfilePhoto()
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+
+
+
+
 
                 Text(
                     text = profileState?.username ?: "",
@@ -176,19 +252,19 @@ fun ProfileScreen(
                 LearningProgress(x)
 
 
-                Spacer(modifier = Modifier.weight(1f))  
+                Spacer(modifier = Modifier.weight(1f))
 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 24.dp), 
+                        .padding(bottom = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Button(
                         onClick = { showEditDialog = true },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp), 
+                            .height(56.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = PrimaryBlue
                         ),
@@ -217,7 +293,7 @@ fun ProfileScreen(
                             },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(56.dp), 
+                                .height(56.dp),
                             colors = ButtonDefaults.outlinedButtonColors(
                                 contentColor = PrimaryBlue
                             ),
@@ -239,7 +315,7 @@ fun ProfileScreen(
                             onClick = { navController.navigate("help_screen") },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(56.dp), 
+                                .height(56.dp),
                             colors = ButtonDefaults.outlinedButtonColors(
                                 contentColor = PrimaryBlue
                             ),
@@ -257,7 +333,7 @@ fun ProfileScreen(
                             )
                         }
                     }
-                    
+
                     Button(
                         onClick = {
                             authViewModel.logout {
@@ -268,7 +344,7 @@ fun ProfileScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp), 
+                            .height(56.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = SoftOrange
                         ),
@@ -290,45 +366,58 @@ fun ProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+                // Иконка пользователя
                 Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = "Иконка профиля",
                     modifier = Modifier
-                        .size(100.dp)
-                        .padding(bottom = 16.dp),
+                        .size(120.dp)
+                        .padding(bottom = 24.dp),
                     tint = DarkBlue
                 )
 
+                // Заголовок
                 Text(
-                    "Войдите в аккаунт",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    text = "Войдите в аккаунт",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
 
+                // Описание
                 Text(
-                    "Чтобы получить доступ к профилю и отслеживать свой прогресс",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "Чтобы получить доступ к профилю, чату с AI и отслеживать свой прогресс",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    lineHeight = 24.sp,
+                    modifier = Modifier.padding(bottom = 40.dp)
                 )
 
+                // Кнопка входа
                 Button(
-                    onClick = {
-                        navController.navigate(AppRoutes.AUTH_SCREEN)
-                    },
+                    onClick = { navController.navigate(AppRoutes.AUTH_SCREEN) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = DarkBlue
+                        .height(56.dp), // Стандартная высота кнопки MD3
+                    shape = MaterialTheme.shapes.medium,
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 2.dp,
+                        pressedElevation = 4.dp
                     ),
-                    border = BorderStroke(1.dp, DarkBlue)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DarkBlue,
+                        contentColor = Color.White
+                    )
                 ) {
-                    Text("Войти в аккаунт")
+                    Text(
+                        text = "Войти в аккаунт",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
         }
@@ -339,7 +428,14 @@ fun ProfileScreen(
             user = profileState!!,
             onDismiss = { showEditDialog = false },
             onSave = { updatedProfile ->
-                viewModel.updateProfile(updatedProfile)
+                viewModel.updateProfile(
+                    UserUpdateRequest(
+                        username = updatedProfile.username,
+                        email = updatedProfile.email,
+                        currentPassword = updatedProfile.currentPassword,
+                        newPassword = updatedProfile.newPassword
+                    )
+                )
                 showEditDialog = false
             }
         )
@@ -351,33 +447,63 @@ fun ProfileScreen(
     }
 }
 
-
 @Composable
 fun EditProfileDialog(
-    user: UserResponse,  
+    user: UserResponse,
     onDismiss: () -> Unit,
-    onSave: (UserResponse) -> Unit  
+    onSave: (UserUpdateRequest) -> Unit
 ) {
     var username by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
+    var currentPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
+    // Валидация
+    val isPasswordSectionTouched = currentPassword.isNotEmpty() || newPassword.isNotEmpty() || confirmPassword.isNotEmpty()
+    val isPasswordValid = when {
+        isPasswordSectionTouched && (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) -> {
+            passwordError = "Все поля пароля обязательны"
+            false
+        }
+        isPasswordSectionTouched && (newPassword.length < 6 || currentPassword.length < 6) -> {
+            passwordError = "Пароли должны содержать не менее 6 символов"
+            false
+        }
+        isPasswordSectionTouched && newPassword != confirmPassword -> {
+            passwordError = "Новый пароль и подтверждение не совпадают"
+            false
+        }
+        isPasswordSectionTouched && newPassword == currentPassword -> {
+            passwordError = "Новый пароль должен отличаться от текущего"
+            false
+        }
+        else -> {
+            passwordError = null
+            true
+        }
+    }
+
+    val isSaveEnabled = passwordError == null
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
+                .padding(24.dp),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(20.dp)
             ) {
                 Text(
                     "Редактировать профиль",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.primary),
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -387,7 +513,7 @@ fun EditProfileDialog(
                     label = { Text("Имя пользователя") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 6.dp)
                 )
 
                 OutlinedTextField(
@@ -396,29 +522,82 @@ fun EditProfileDialog(
                     label = { Text("Email") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 6.dp)
                 )
+
+                Text(
+                    "Изменение пароля (необязательно)",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                )
+
+                OutlinedTextField(
+                    value = currentPassword,
+                    onValueChange = { currentPassword = it },
+                    label = { Text("Текущий пароль") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    isError = passwordError != null
+                )
+
+                OutlinedTextField(
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
+                    label = { Text("Новый пароль") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    isError = passwordError != null
+                )
+
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = { Text("Подтвердите новый пароль") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    isError = passwordError != null
+                )
+
+                passwordError?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .padding(top = 20.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text("Отмена")
                     }
+
                     Button(
                         onClick = {
-                            onSave(
-                                UserResponse(
-                                    id = user.id,
-                                    username = username,
-                                    email = email,
-                                    profilePicture = user.profilePicture
-                                )
+                            val userUpdateRequest = UserUpdateRequest(
+                                username = username,
+                                email = email,
+                                currentPassword = currentPassword.ifEmpty { null },
+                                newPassword = newPassword.ifEmpty { null }
                             )
+
+                            Log.d("EditProfileDialog", "Sending request: $userUpdateRequest")
+                            onSave(userUpdateRequest)
+                            onDismiss()
                         },
+                        enabled = isSaveEnabled,
                         modifier = Modifier.padding(start = 8.dp)
                     ) {
                         Text("Сохранить")
@@ -428,6 +607,82 @@ fun EditProfileDialog(
         }
     }
 }
+//@Composable
+//fun EditProfileDialog(
+//    user: UserResponse,
+//    onDismiss: () -> Unit,
+//    onSave: (UserResponse) -> Unit
+//) {
+//    var username by remember { mutableStateOf(user.username) }
+//    var email by remember { mutableStateOf(user.email) }
+//
+//    Dialog(onDismissRequest = onDismiss) {
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp),
+//            colors = CardDefaults.cardColors(
+//                containerColor = MaterialTheme.colorScheme.surface
+//            )
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp)
+//            ) {
+//                Text(
+//                    "Редактировать профиль",
+//                    style = MaterialTheme.typography.titleLarge,
+//                    modifier = Modifier.padding(bottom = 16.dp)
+//                )
+//
+//                OutlinedTextField(
+//                    value = username,
+//                    onValueChange = { username = it },
+//                    label = { Text("Имя пользователя") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp)
+//                )
+//
+//                OutlinedTextField(
+//                    value = email,
+//                    onValueChange = { email = it },
+//                    label = { Text("Email") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp)
+//                )
+//
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 16.dp),
+//                    horizontalArrangement = Arrangement.End
+//                ) {
+//                    TextButton(onClick = onDismiss) {
+//                        Text("Отмена")
+//                    }
+//                    Button(
+//                        onClick = {
+//                            onSave(
+//                                UserResponse(
+//                                    id = user.id,
+//                                    username = username,
+//                                    email = email,
+//                                    profilePicture = user.profilePicture
+//                                )
+//                            )
+//                        },
+//                        modifier = Modifier.padding(start = 8.dp)
+//                    ) {
+//                        Text("Сохранить")
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun LearningProgress(progress: Float) {

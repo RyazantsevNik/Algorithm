@@ -1,6 +1,8 @@
 package com.example.algorithms.screens.chat
 
 import android.widget.TextView
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,6 +31,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,12 +43,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.example.algorithms.R
 import com.example.algorithms.di.ai_chat.Message
 import com.example.algorithms.navigation.AppRoutes
-import com.example.algorithms.viewmodels.ChatViewModel
+import com.example.algorithms.ui.theme.DarkBlue
+import com.example.algorithms.viewmodels.chat.ChatViewModel
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -168,21 +180,56 @@ fun ChatScreen(
             }
         } else {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Логотип
+                Image(
+                    painter = painterResource(id = R.drawable.ic_robot_logo),
+                    contentDescription = "Логотип приложения",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .padding(bottom = 24.dp),
+                    contentScale = ContentScale.Fit
+                )
+
+                // Текст заголовка
                 Text(
                     text = "Для использования чата требуется авторизация",
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontSize = 22.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 28.sp
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
+
+                // Кнопка авторизации
                 Button(
-                    onClick = { navController.navigate(AppRoutes.PROFILE) },
+                    onClick = { navController.navigate(AppRoutes.AUTH_SCREEN) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp), // Стандартная высота кнопки Material Design
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
+                        containerColor = DarkBlue,
+                        contentColor = Color.White
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 8.dp
+                    ),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Войти в аккаунт")
+                    Text(
+                        text = "Войти в аккаунт",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
         }
@@ -203,36 +250,30 @@ fun ChatScreen(
             }
         }
     }
-
-    LaunchedEffect(viewModel.errorState.value) {
-        if (viewModel.errorState.value?.contains("Сессия истекла") == true) {
-            navController.navigate(AppRoutes.PROFILE) {
-                popUpTo("chat") { inclusive = true }
-            }
-        }
-    }
 }
 
 @Composable
 fun MessageBubble(message: Message) {
+    val isUser = message.role == "user"
+
     Box(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
-        contentAlignment = if (message.role == "user") Alignment.CenterEnd else Alignment.CenterStart
+        contentAlignment = if (isUser) Alignment.CenterEnd else Alignment.CenterStart
     ) {
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = if (message.role == "user") Color.LightGray else Color.Blue
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = if (isUser) Color(0xFFE0E0E0) else Color.White,
+            tonalElevation = 2.dp,
+            border = if (!isUser) BorderStroke(1.dp, Color.Gray) else null
         ) {
             Box(modifier = Modifier.padding(16.dp)) {
-                if (message.role == "assistant") {
+                if (!isUser) {
                     AndroidView(
                         factory = { context ->
                             TextView(context).apply {
-                                setTextColor(android.graphics.Color.WHITE) // Белый текст
+                                setTextColor(android.graphics.Color.BLACK) // черный текст
                                 textSize = 16f
                                 val markwon = Markwon.create(context)
                                 markwon.setMarkdown(this, message.content)

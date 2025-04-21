@@ -21,10 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.algorithms.viewmodels.base_class_for_simulation.SortingViewModel
+import com.example.algorithms.viewmodels.simulation_sorting.base_class_for_simulation.SortingViewModel
 
 @Composable
-fun CardMarking(viewModel: SortingViewModel){
+fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
     val state by viewModel.state.collectAsState()
     Row(
         modifier = Modifier
@@ -160,7 +160,37 @@ fun CardMarking(viewModel: SortingViewModel){
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val firstValue = when (currentAlgorithm) {
+                    1 -> if (state.j < state.list.lastIndex) state.list.getOrNull(state.j) else null // пузырьком
+                    2 -> { // Сортировка выбором
+                        if (state.minIndex in state.list.indices) {
+                            state.list[state.minIndex].toString()
+                        } else if (state.i in state.list.indices) {
+                            state.list[state.i].toString()
+                        } else "—"
+                    }
+                    3 -> { // Сортировка вставками
+                        if (state.currentComparisonIndex in state.list.indices)
+                            state.list[state.currentComparisonIndex].toString()
+                        else "—"
+                    }
+                   // 4 -> if (state.j in state.list.indices) state.list[state.j] else null // быстрая
+                    else -> null
+                }
 
+                val secondValue = when (currentAlgorithm) {
+                    1 -> if (state.j + 1 < state.list.size) state.list.getOrNull(state.j + 1) else null
+                    2 -> { // Сортировка выбором
+                        if (state.currentComparisonIndex in state.list.indices)
+                            state.list[state.currentComparisonIndex].toString()
+                        else "—"
+                    }
+                    3 -> { // Сортировка вставками
+                        state.keyValue?.toString() ?: "—"
+                    }
+                        //     4 -> if (state.pivotIndex in state.list.indices) state.list[state.pivotIndex] else null
+                    else -> null
+                }
 
                 // Первый элемент
                 Column(
@@ -174,14 +204,16 @@ fun CardMarking(viewModel: SortingViewModel){
                         color = Color.Gray,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    Text(
-                        text = if (state.j < state.list.size - state.i - 1) {
-                            "${state.list[state.j]}"
-                        } else "—",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
+//                    Text(
+//                        text = if (state.j < state.list.size - state.i - 1) {
+//                            "${state.list[state.j]}"
+//                        } else "—",
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color.Black
+//                    )
+                    Text(firstValue?.toString() ?: "—", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+
                 }
                 // Вертикальная черта для разделения
                 Box(
@@ -202,14 +234,15 @@ fun CardMarking(viewModel: SortingViewModel){
                         color = Color.Gray,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    Text(
-                        text = if (state.j < state.list.size - state.i - 1) {
-                            "${state.list[state.j + 1]}"
-                        } else "—",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
+//                    Text(
+//                        text = if (state.j < state.list.size - state.i - 1) {
+//                            "${state.list[state.j + 1]}"
+//                        } else "—",
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color.Black
+//                    )
+                    Text(secondValue?.toString() ?: "—", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

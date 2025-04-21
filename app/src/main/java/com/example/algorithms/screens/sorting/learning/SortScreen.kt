@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.algorithms.R
-import com.example.algorithms.viewmodels.BaseSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.base_class_for_step.BaseSortStepViewModel
 
 @Composable
 fun SortScreen(viewModel: BaseSortStepViewModel) {

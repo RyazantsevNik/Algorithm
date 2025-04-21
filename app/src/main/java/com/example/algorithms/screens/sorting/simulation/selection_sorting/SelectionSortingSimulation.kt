@@ -39,10 +39,9 @@ import androidx.compose.ui.unit.sp
 import com.example.algorithms.screens.sorting.simulation.CustomButton
 import com.example.algorithms.screens.sorting.simulation.bubble_sorting.CardMarking
 import com.example.algorithms.screens.sorting.simulation.bubble_sorting.CustomProgressBar
-import com.example.algorithms.screens.sorting.simulation.bubble_sorting.GraphicAnimation
 import com.example.algorithms.screens.sorting.simulation.bubble_sorting.SpeedControl
-import com.example.algorithms.viewmodels.SelectionSortViewModel
-import com.example.algorithms.viewmodels.base_class_for_simulation.SortingViewModel
+import com.example.algorithms.viewmodels.simulation_sorting.SelectionSortViewModel
+import com.example.algorithms.viewmodels.simulation_sorting.base_class_for_simulation.SortingViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -153,9 +152,8 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
         // Управление скоростью
         SpeedControl(viewModel)
 
-
         //Карточки шаг/сравнение
-        CardMarking(viewModel)
+        CardMarking(viewModel,2)
 
         //Прогресс бар
         CustomProgressBar(progress = state.progress.toInt())

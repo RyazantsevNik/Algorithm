@@ -1,4 +1,4 @@
-package com.example.algorithms.di.chat_api
+package com.example.algorithms.di.main_api
 
 import com.google.gson.annotations.SerializedName
 

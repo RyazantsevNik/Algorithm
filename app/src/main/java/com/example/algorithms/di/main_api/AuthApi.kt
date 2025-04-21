@@ -1,4 +1,4 @@
-package com.example.algorithms.di.chat_api
+package com.example.algorithms.di.main_api
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.http.Body
@@ -10,9 +10,9 @@ data class LoginResponse(
 )
 
 interface AuthApi {
-    @POST("/register/")
+    @POST("/register")
     suspend fun register(@Body request: RegisterRequest): AuthResponse
 
-    @POST("/login/")
+    @POST("/login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
 }

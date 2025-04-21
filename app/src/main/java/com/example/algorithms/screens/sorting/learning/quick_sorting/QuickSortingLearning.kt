@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.algorithms.screens.sorting.learning.IntroScreen
 import com.example.algorithms.screens.sorting.learning.SortScreen
-import com.example.algorithms.viewmodels.QuickSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.QuickSortStepViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable

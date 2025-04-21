@@ -1,12 +1,14 @@
-package com.example.algorithms.viewmodels
+package com.example.algorithms.viewmodels.profile
 
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.algorithms.di.chat_api.ProfileApi
-import com.example.algorithms.di.chat_api.UserResponse
+import com.example.algorithms.di.main_api.ProfileApi
+import com.example.algorithms.di.main_api.UserResponse
+import com.example.algorithms.di.main_api.UserUpdateRequest
 import com.example.algorithms.utils.AuthState
 import com.example.algorithms.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,13 +68,14 @@ class ProfileViewModel(
         isInitialized = false
     }
 
-    fun updateProfile(newProfile: UserResponse) {
+    fun updateProfile(newData: UserUpdateRequest) {
+        Log.d("EditProfile","$newData")
         viewModelScope.launch {
             try {
                 val token = TokenManager.getToken(application)
                 if (token != null) {
                     val bearerToken = "Bearer $token"
-                    val updatedProfile = profileApi.updateProfile(bearerToken, newProfile)
+                    val updatedProfile = profileApi.updateProfile(bearerToken, newData)
                     _profileState.value = updatedProfile
                 } else {
                     _error.value = "Токен не найден"
@@ -109,6 +112,23 @@ class ProfileViewModel(
                 }
             } catch (e: Exception) {
                 _error.value = e.message ?: "Ошибка обновления фото профиля"
+            }
+        }
+    }
+
+    fun deleteProfilePhoto() {
+        viewModelScope.launch {
+            try {
+                val token = TokenManager.getToken(application)
+                if (token != null) {
+                    val bearerToken = "Bearer $token"
+                    profileApi.deleteProfilePhoto(bearerToken)
+                    refreshProfile()
+                } else {
+                    _error.value = "Токен не найден"
+                }
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Ошибка удаления фото"
             }
         }
     }

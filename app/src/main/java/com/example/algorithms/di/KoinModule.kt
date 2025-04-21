@@ -1,11 +1,21 @@
 package com.example.algorithms.di
 
 import com.example.algorithms.di.ai_chat.ChatApi
-import com.example.algorithms.di.chat_api.ApiClient
-import com.example.algorithms.di.chat_api.AuthApi
-import com.example.algorithms.di.chat_api.ProfileApi
-import com.example.algorithms.di.chat_api.ProgressApi
-import com.example.algorithms.viewmodels.*
+import com.example.algorithms.di.main_api.ApiClient
+import com.example.algorithms.di.main_api.AuthApi
+import com.example.algorithms.di.main_api.ProfileApi
+import com.example.algorithms.di.main_api.ProgressApi
+import com.example.algorithms.viewmodels.chat.ChatViewModel
+import com.example.algorithms.viewmodels.menu.MenuViewModel
+import com.example.algorithms.viewmodels.profile.AuthViewModel
+import com.example.algorithms.viewmodels.profile.ProfileViewModel
+import com.example.algorithms.viewmodels.simulation_sorting.BubbleSortViewModel
+import com.example.algorithms.viewmodels.simulation_sorting.InsertionSortViewModel
+import com.example.algorithms.viewmodels.simulation_sorting.SelectionSortViewModel
+import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.InsertionSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.QuickSortStepViewModel
+import com.example.algorithms.viewmodels.step_sorting.SelectionSortStepViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -20,6 +30,7 @@ val appModule = module {
     viewModel { AuthViewModel(get(), get(), get()) }
     viewModel { MenuViewModel() }
     viewModel { BubbleSortViewModel() }
+    viewModel { InsertionSortViewModel() }
     viewModel { SelectionSortViewModel() }
     viewModel { BubbleSortStepViewModel() }
     viewModel { SelectionSortStepViewModel() }

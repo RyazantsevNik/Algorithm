@@ -1,4 +1,4 @@
-package com.example.algorithms.viewmodels
+package com.example.algorithms.viewmodels.chat
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -10,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.algorithms.di.ai_chat.ChatApi
 import com.example.algorithms.di.ai_chat.ChatRequest
 import com.example.algorithms.di.ai_chat.Message
+import com.example.algorithms.viewmodels.profile.ProfileViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 
@@ -32,12 +32,14 @@ class ChatViewModel(
     private val _errorState = mutableStateOf<String?>(null)
     val errorState: State<String?> get() = _errorState
 
+    val isLoading = mutableStateOf(true)
     val isAuthenticated = mutableStateOf(false)
 
     init {
         viewModelScope.launch {
             profileViewModel.profileState.collect { profile ->
                 isAuthenticated.value = profile != null
+                isLoading.value = false
             }
         }
     }
