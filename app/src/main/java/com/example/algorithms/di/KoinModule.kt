@@ -9,9 +9,12 @@ import com.example.algorithms.viewmodels.chat.ChatViewModel
 import com.example.algorithms.viewmodels.menu.MenuViewModel
 import com.example.algorithms.viewmodels.profile.AuthViewModel
 import com.example.algorithms.viewmodels.profile.ProfileViewModel
+import com.example.algorithms.viewmodels.simulation_search.LinearSearchSimulationViewModel
 import com.example.algorithms.viewmodels.simulation_sorting.BubbleSortViewModel
 import com.example.algorithms.viewmodels.simulation_sorting.InsertionSortViewModel
 import com.example.algorithms.viewmodels.simulation_sorting.SelectionSortViewModel
+import com.example.algorithms.viewmodels.step_search.BinarySearchViewModel
+import com.example.algorithms.viewmodels.step_search.LinearSearchViewModel
 import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
 import com.example.algorithms.viewmodels.step_sorting.InsertionSortStepViewModel
 import com.example.algorithms.viewmodels.step_sorting.QuickSortStepViewModel
@@ -36,6 +39,9 @@ val appModule = module {
     viewModel { SelectionSortStepViewModel() }
     viewModel { InsertionSortStepViewModel() }
     viewModel { QuickSortStepViewModel() }
+    viewModel { LinearSearchViewModel() }
+    viewModel { BinarySearchViewModel() }
+    viewModel { LinearSearchSimulationViewModel() }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ChatViewModel(get(), get(), get()) }              //chat
 }

@@ -64,10 +64,8 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
                 )
             }
 
-
             // Карточка с информацией об отсортированных элементах
             SortedElementsCard(viewModel = viewModel)
-
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

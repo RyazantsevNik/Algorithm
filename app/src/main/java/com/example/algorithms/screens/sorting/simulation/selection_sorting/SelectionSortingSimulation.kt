@@ -75,7 +75,7 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(bottom = 4.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -200,7 +200,7 @@ fun GraphicAnimationForSelectionSort(viewModel: SortingViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
-            .padding(vertical = 16.dp)
+            .padding(vertical = 8.dp)
     ) {
         val barWidth = size.width / state.list.size
         val maxBarHeight = size.height - 40

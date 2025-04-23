@@ -1,11 +1,8 @@
-package com.example.algorithms.screens.algorithm_screen
+package com.example.algorithms.screens.search.learning.linear_search
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,10 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,20 +26,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.algorithms.R
+import com.example.algorithms.screens.sorting.learning.IntroScreen
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlgorithmScreen(
-    title: String,
-    navController: NavHostController,
-    content: @Composable () -> Unit
-) {
+fun LinearSearchLearning(navController: NavHostController) {
+    var showIntro by remember { mutableStateOf(true) }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = title,
+                        text = "Линейный поиск",
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
@@ -59,44 +58,25 @@ fun AlgorithmScreen(
                         )
                     }
                 },
-//                actions = {
-//                    IconButton(onClick = { /* Обработка клика настроек */ }) {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_info_button),
-//                            contentDescription = "Settings",
-//                            tint = Color.Unspecified,
-//                            modifier = Modifier.size(24.dp)
-//                        )
-//                    }
-//                },
+
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF90CAF9)
                 ),
                 modifier = Modifier.shadow(elevation = 2.dp)
             )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFE3F2FD), // Светлый голубой (верх)
-                            Color.White      // Белый (низ)
-                        )
-                    )
-                )
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                content()
+        },
+        content = {
+            if (showIntro) {
+                Spacer(modifier = Modifier.height(20.dp))
+                IntroScreen(
+                    algorithmTitle = "Линейный поиск",
+                    principleContent = "Линейный поиск последовательно проверяет каждый элемент массива, начиная с первого, до тех пор, пока не будет найден искомый элемент или не будет пройден весь массив.",
+                    passesContent = "На каждом шаге алгоритм сравнивает текущий элемент с целевым значением. Если они совпадают — поиск завершён, иначе — переходит к следующему элементу.",
+                    efficiencyContent = "В худшем случае линейный поиск выполняет O(n) сравнений. Он прост в реализации и неэффективен на больших массивах."
+                ) { showIntro = false }
+            } else {
+                LinearSearchVisualizationScreen(navController)
             }
         }
-    }
+    )
 }

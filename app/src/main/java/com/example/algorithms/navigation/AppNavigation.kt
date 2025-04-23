@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.example.algorithms.screens.auth.AuthScreen
 import com.example.algorithms.screens.chat.ChatScreen
 import com.example.algorithms.screens.selection.AlgorithmSelectionScreen
@@ -19,15 +18,19 @@ import com.example.algorithms.screens.menu.AlgorithmsMenuScreen
 import com.example.algorithms.screens.menu.HomeScreen
 import com.example.algorithms.screens.profile.HelpScreen
 import com.example.algorithms.screens.profile.ProfileScreen
+import com.example.algorithms.screens.search.learning.binary_search.BinarySearchLearning
+import com.example.algorithms.screens.search.learning.linear_search.LinearSearchLearning
+import com.example.algorithms.screens.search.simulation.BinarySearchSimulationScreen
+import com.example.algorithms.screens.search.simulation.LinearSearchSimulationScreen
 import com.example.algorithms.screens.sorting.BubbleSortingVisualizationScreen
 import com.example.algorithms.screens.selection.PracticeScreen
 import com.example.algorithms.screens.selection.TheoryScreen
 import com.example.algorithms.screens.sorting.BubbleSortingLearningScreen
 import com.example.algorithms.screens.sorting.InsertionSortingLearningScreen
 import com.example.algorithms.screens.sorting.InsertionSortingVisualizationScreen
+import com.example.algorithms.screens.sorting.QuickSortingLearningScreen
 import com.example.algorithms.screens.sorting.SelectionSortingVisualizationScreen
 import com.example.algorithms.screens.sorting.SortingSelectionLearningScreen
-import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
 
 @Composable
 fun AppNavigation() {
@@ -104,7 +107,9 @@ fun AppNavigation() {
                     "Сортировка пузырьком" -> BubbleSortingLearningScreen(navController)
                     "Сортировка выбором" -> SortingSelectionLearningScreen(navController)
                     "Сортировка вставками" -> InsertionSortingLearningScreen(navController)
-                    "Быстрая сортировка" -> QuickSortingLearning()
+                    "Быстрая сортировка" -> QuickSortingLearningScreen(navController)
+                    "Линейный поиск" -> LinearSearchLearning(navController)
+                    "Бинарный поиск" -> BinarySearchLearning(navController)
                     // TODO Добавьте другие теории алгоритмов здесь
 
                     else -> TheoryScreen(navController, algorithmTitle)
@@ -122,6 +127,8 @@ fun AppNavigation() {
                     "Сортировка пузырьком" -> BubbleSortingVisualizationScreen(navController)
                     "Сортировка выбором" -> SelectionSortingVisualizationScreen(navController)
                     "Сортировка вставками" -> InsertionSortingVisualizationScreen(navController)
+                    "Линейный поиск" -> LinearSearchSimulationScreen(navController)
+                    "Бинарный поиск" -> BinarySearchSimulationScreen(navController)
                     // TODO Добавьте другие практики алгоритмов здесь
 
                     else -> PracticeScreen(navController, algorithmTitle)

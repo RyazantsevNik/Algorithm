@@ -64,7 +64,7 @@ fun BubbleSortingSimulation(viewModel: BubbleSortViewModel = getViewModel()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(bottom = 4.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

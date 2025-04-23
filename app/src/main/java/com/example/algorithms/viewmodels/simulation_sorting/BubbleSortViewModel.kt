@@ -23,11 +23,8 @@ class BubbleSortViewModel : SortingViewModel() {
                             }
                             awaitAll(animation1, animation2)
                         }
-
-                        // Сбрасываем анимационные смещения сразу после завершения анимации
                         animatedOffsets[currentState.j].snapTo(0f)
                         animatedOffsets[currentState.j + 1].snapTo(0f)
-
                         _state.update {
                             it.copy(
                                 list = it.list.toMutableList().apply {
@@ -38,14 +35,15 @@ class BubbleSortViewModel : SortingViewModel() {
                                 j = currentState.j + 1
                             )
                         }
-
                         animatedOffsets[currentState.j].snapTo(0f)
                         animatedOffsets[currentState.j + 1].snapTo(0f)
                     } else {
                         _state.update { it.copy(j = it.j + 1) }
                     }
+                    updateProgress() // Обновляем прогресс после каждого шага
                 } else {
                     _state.update { it.copy(j = 0, i = it.i + 1) }
+                    updateProgress() // Обновляем прогресс при переходе к следующему i
                 }
                 delay(currentState.delayTime)
             } else {

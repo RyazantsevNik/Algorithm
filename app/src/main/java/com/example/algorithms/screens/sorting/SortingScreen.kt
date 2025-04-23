@@ -10,6 +10,8 @@ import com.example.algorithms.screens.sorting.simulation.bubble_sorting.BubbleSo
 import com.example.algorithms.screens.sorting.learning.selection_sorting.SelectionSortingLearning
 import com.example.algorithms.screens.sorting.simulation.insertion_sorting.InsertionSortingSimulation
 import com.example.algorithms.screens.sorting.simulation.selection_sorting.SelectionSortingSimulation
+import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
+
 
 @Composable
 fun BubbleSortingVisualizationScreen(navController: NavHostController) {
@@ -72,7 +74,7 @@ fun InsertionSortingVisualizationScreen(navController: NavHostController) {
 }
 
 @Composable
-fun SortingQuickScreen(navController: NavHostController) {
+fun QuickSortingLearningScreen(navController: NavHostController) {
     AlgorithmScreen(
         title = "Быстрая сортировка",
         navController = navController

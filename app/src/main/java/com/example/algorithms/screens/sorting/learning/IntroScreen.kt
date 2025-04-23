@@ -56,7 +56,7 @@ fun IntroScreen(
             title = "⏳ Эффективность",
             content = efficiencyContent
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = onStart,
             modifier = Modifier

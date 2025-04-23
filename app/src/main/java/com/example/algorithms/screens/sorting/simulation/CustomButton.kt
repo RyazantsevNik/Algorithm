@@ -31,7 +31,7 @@ fun CustomButton(
             .clip(RoundedCornerShape(10.dp))
             .background(backgroundColor)
             .border(2.dp, borderColor, RoundedCornerShape(10.dp))
-            .clickable { onClick() }, // Теперь это работает корректно
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
