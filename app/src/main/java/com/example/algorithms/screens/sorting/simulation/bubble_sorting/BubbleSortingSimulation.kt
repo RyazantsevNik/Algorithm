@@ -53,14 +53,14 @@ fun BubbleSortingSimulation(viewModel: BubbleSortViewModel = getViewModel()) {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFE3F2FD), // Светлый голубой (верх)
-                        Color(0xFFFFFFFF)   // Белый (низ)
+                        Color(0xFFE3F2FD),
+                        Color(0xFFFFFFFF)
                     )
                 )
             )
             .padding(top = 8.dp, start = 8.dp, end = 8.dp)
     ) {
-        // Управление размером массива
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,7 +100,7 @@ fun BubbleSortingSimulation(viewModel: BubbleSortViewModel = getViewModel()) {
             )
         }
 
-        // Диалог редактирования массива
+
         if (state.isEditing) {
             AlertDialog(
                 onDismissRequest = { viewModel.toggleEditing() },
@@ -133,24 +133,24 @@ fun BubbleSortingSimulation(viewModel: BubbleSortViewModel = getViewModel()) {
             )
         }
 
-        // Графическая анимация
+
         GraphicAnimation(viewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Управление скоростью
+
         SpeedControl(viewModel)
 
 
-        //Карточки шаг/сравнение
+
         CardMarking(viewModel,1)
 
-        //Прогресс бар
+
         CustomProgressBar(progress = state.progress.toInt())
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопки управления
+
         Row(
             modifier = Modifier
                 .fillMaxWidth().fillMaxHeight()

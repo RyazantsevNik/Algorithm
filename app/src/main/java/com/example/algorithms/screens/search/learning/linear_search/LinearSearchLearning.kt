@@ -43,7 +43,7 @@ fun LinearSearchLearning(navController: NavHostController) {
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = Color(0xFF0D47A1) // Тёмно-синий для заголовка
+                            color = Color(0xFF0D47A1)
                         ),
                         maxLines = 1
                     )

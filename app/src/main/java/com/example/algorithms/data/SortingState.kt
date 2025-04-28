@@ -13,9 +13,9 @@ data class SortingState(
     val arraySize: Int = list.size,
     val progress: Float = 0f,
     val minIndex: Int = -1,
-    val currentComparisonIndex: Int = -1, // Текущий сравниваемый элемент
+    val currentComparisonIndex: Int = -1,
     val keyValue: Int? = null,
     val keyIndex: Int? = null,
-    val isSortingComplete: Boolean = false,  // Добавлено новое поле
+    val isSortingComplete: Boolean = false,
     val savedValue: Int? = null,
 )

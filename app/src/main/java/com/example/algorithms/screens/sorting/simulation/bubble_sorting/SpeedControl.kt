@@ -21,7 +21,7 @@ fun SpeedControl(viewModel: SortingViewModel) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        // Новый слайдер
+
         CustomSlider(
             value = (1050f - state.delayTime) / 1000f,
             onValueChange = { newValue ->

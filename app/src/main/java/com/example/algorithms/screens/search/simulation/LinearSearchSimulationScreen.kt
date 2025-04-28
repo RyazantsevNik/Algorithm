@@ -15,12 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -40,10 +38,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.algorithms.screens.algorithm_screen.AlgorithmScreen
 import com.example.algorithms.screens.sorting.simulation.CustomButton
-import com.example.algorithms.screens.sorting.simulation.bubble_sorting.CustomProgressBar
 import com.example.algorithms.viewmodels.simulation_search.LinearSearchSimulationViewModel
 import com.example.algorithms.viewmodels.simulation_search.SearchSimulationViewModel
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
 @Composable
@@ -59,17 +55,17 @@ fun LinearSearchSimulationScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Настройки
+
             SettingsSection(viewModel)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Визуализация
+
             LinearSearchVisualizer(viewModel)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Панель управления
+
             ControlPanel(viewModel)
         }
     }
@@ -82,7 +78,7 @@ fun SettingsSection(viewModel: SearchSimulationViewModel) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
     Column {
-        // Кнопка "Изменить массив"
+
         CustomButton(
             text = "Изменить массив",
             onClick = { isDialogOpen = true },
@@ -93,7 +89,7 @@ fun SettingsSection(viewModel: SearchSimulationViewModel) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Поле для ввода искомого числа
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -117,7 +113,7 @@ fun SettingsSection(viewModel: SearchSimulationViewModel) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Диалоговое окно для изменения массива
+
         if (isDialogOpen) {
             AlertDialog(
                 onDismissRequest = { isDialogOpen = false },

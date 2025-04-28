@@ -15,7 +15,7 @@ import kotlin.math.log2
 
 
 class BinarySearchViewModel : ViewModel() {
-    // Состояния для новых шагов
+
     sealed class SearchStep {
         object Initial : SearchStep()
         data class CalculateMid(val mid: Int) : SearchStep()
@@ -76,10 +76,10 @@ class BinarySearchViewModel : ViewModel() {
                     _explanation.value = "Элемент $target не найден"
                 }
             }
-            else -> {} // Конец поиска
+            else -> {}
         }
         _stepIndex.intValue++
-        _stepHistory.add(_currentStep.value) // Сохраняем текущий шаг в историю
+        _stepHistory.add(_currentStep.value)
     }
 
     private fun calculateMid() {
@@ -110,14 +110,14 @@ class BinarySearchViewModel : ViewModel() {
                 _explanation.value = "Элемент $target найден на позиции $mid"
             }
             "less" -> {
-                // Отключаем элементы слева ВКЛЮЧАЯ MID
+
                 (_left.intValue..mid).forEach { _disabledIndices.add(it) }
                 _left.intValue = mid + 1
                 _currentStep.value = SearchStep.AdjustBounds(_left.intValue, _right.intValue)
                 _explanation.value = "Обновляем границы поиска: [${_left.intValue}, ${_right.intValue}] → идём вправо"
             }
             else -> {
-                // Отключаем элементы справа ВКЛЮЧАЯ MID
+
                 (mid.._right.intValue).forEach { _disabledIndices.add(it) }
                 _right.intValue = mid - 1
                 _currentStep.value = SearchStep.AdjustBounds(_left.intValue, _right.intValue)
@@ -135,27 +135,27 @@ class BinarySearchViewModel : ViewModel() {
         _disabledIndices.clear()
         _currentStep.value = SearchStep.Initial
         _explanation.value = getInitialExplanation()
-        _stepHistory.clear() // Очищаем историю шагов
-        _stepHistory.add(SearchStep.Initial) // Добавляем начальный шаг в историю
+        _stepHistory.clear()
+        _stepHistory.add(SearchStep.Initial)
     }
 
     fun goToEnd() {
         stopAuto()
         goToStart()
 
-        // Быстро выполняем все шаги до конца
+
         while (_currentStep.value !is SearchStep.Found && _currentStep.value !is SearchStep.NotFound) {
             goToNextStep()
         }
     }
 
     fun goToPreviousStep() {
-        if (_stepHistory.size > 1) { // Нужно оставить хотя бы начальное состояние
+        if (_stepHistory.size > 1) {
             val lastIndex = _stepHistory.size - 1
-            _stepHistory.removeAt(lastIndex) // Удаляем текущий шаг
-            val previousStep = _stepHistory.last() // Получаем предыдущий шаг
+            _stepHistory.removeAt(lastIndex)
+            val previousStep = _stepHistory.last()
 
-            // Восстанавливаем состояние на основе типа шага
+
             when (previousStep) {
                 is SearchStep.Initial -> {
                     _left.intValue = 0
@@ -199,7 +199,7 @@ class BinarySearchViewModel : ViewModel() {
             }
 
             _currentStep.value = previousStep
-            _stepIndex.intValue = maxOf(0, _stepIndex.intValue - 1) // Защита от отрицательных значений
+            _stepIndex.intValue = maxOf(0, _stepIndex.intValue - 1)
         }
     }
 

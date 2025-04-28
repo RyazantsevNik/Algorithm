@@ -143,12 +143,12 @@ private fun FavoriteSection(navController: NavHostController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-//            items(favoriteAlgorithms) { algorithm ->
-//                FavoriteAlgorithmCard(
-//                    algorithm = algorithm,
-//                    onClick = { navController.navigate(AppRoutes.algorithmSelectionRoute(algorithm.title)) }
-//                )
-//            }
+
+
+
+
+
+
         }
     }
 }

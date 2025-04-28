@@ -22,7 +22,7 @@ data class UserUpdateRequest(
     @SerializedName("email")
     val email: String? = null,
     @SerializedName("current_password")
-    val currentPassword: String? = null, // Текущий пароль
+    val currentPassword: String? = null,
     @SerializedName("new_password")
     val newPassword: String? = null
 )

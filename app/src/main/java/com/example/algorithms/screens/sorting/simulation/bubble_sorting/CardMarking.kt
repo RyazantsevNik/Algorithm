@@ -30,30 +30,30 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .padding(horizontal = 8.dp, vertical = 8.dp) // Уменьшил отступы по краям
+            .padding(horizontal = 8.dp, vertical = 8.dp)
             .border(2.dp, Color.Gray, RoundedCornerShape(10.dp))
             .background(Color.White, RoundedCornerShape(10.dp)),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Колонка "Шаг"
+
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(8.dp), // Отступы внутри колонки
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Заголовок "Шаг"
+
             Text(
                 text = "Шаг",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(bottom = 8.dp) // Отступ снизу для заголовка
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Горизонтальная черта под заголовком
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -61,7 +61,7 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
                     .background(Color.Gray.copy(alpha = 0.5f))
             )
 
-            // Нижняя часть: текущий шаг и всего шагов
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -71,7 +71,7 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
             ) {
 
 
-                // Текущий шаг
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -90,14 +90,14 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
                         color = Color.Black
                     )
                 }
-                // Вертикальная черта для разделения
+
                 Box(
                     modifier = Modifier
                         .width(1.dp)
                         .height(40.dp)
                         .background(Color.Gray.copy(alpha = 0.5f))
                 )
-                // Всего шагов
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -119,7 +119,7 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
             }
         }
 
-        // Разделительная полоса между карточками
+
         Box(
             modifier = Modifier
                 .width(1.dp)
@@ -127,24 +127,24 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
                 .background(Color.Gray.copy(alpha = 0.5f))
         )
 
-        // Колонка "Сравнение"
+
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(8.dp), // Отступы внутри колонки
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Заголовок "Сравнение"
+
             Text(
                 text = "Сравнение",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(bottom = 8.dp) // Отступ снизу для заголовка
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Горизонтальная черта под заголовком
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -152,7 +152,7 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
                     .background(Color.Gray.copy(alpha = 0.5f))
             )
 
-            // Нижняя часть: первый и второй элемент
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,38 +161,38 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val firstValue = when (currentAlgorithm) {
-                    1 -> if (state.j < state.list.lastIndex) state.list.getOrNull(state.j) else null // пузырьком
-                    2 -> { // Сортировка выбором
+                    1 -> if (state.j < state.list.lastIndex) state.list.getOrNull(state.j) else null
+                    2 -> {
                         if (state.minIndex in state.list.indices) {
                             state.list[state.minIndex].toString()
                         } else if (state.i in state.list.indices) {
                             state.list[state.i].toString()
                         } else "—"
                     }
-                    3 -> { // Сортировка вставками
+                    3 -> {
                         if (state.currentComparisonIndex in state.list.indices)
                             state.list[state.currentComparisonIndex].toString()
                         else "—"
                     }
-                   // 4 -> if (state.j in state.list.indices) state.list[state.j] else null // быстрая
+
                     else -> null
                 }
 
                 val secondValue = when (currentAlgorithm) {
                     1 -> if (state.j + 1 < state.list.size) state.list.getOrNull(state.j + 1) else null
-                    2 -> { // Сортировка выбором
+                    2 -> {
                         if (state.currentComparisonIndex in state.list.indices)
                             state.list[state.currentComparisonIndex].toString()
                         else "—"
                     }
-                    3 -> { // Сортировка вставками
+                    3 -> {
                         state.keyValue?.toString() ?: "—"
                     }
-                        //     4 -> if (state.pivotIndex in state.list.indices) state.list[state.pivotIndex] else null
+
                     else -> null
                 }
 
-                // Первый элемент
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -204,25 +204,25 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
                         color = Color.Gray,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
-//                    Text(
-//                        text = if (state.j < state.list.size - state.i - 1) {
-//                            "${state.list[state.j]}"
-//                        } else "—",
-//                        fontSize = 16.sp,
-//                        fontWeight = FontWeight.Bold,
-//                        color = Color.Black
-//                    )
+
+
+
+
+
+
+
+
                     Text(firstValue?.toString() ?: "—", fontSize = 16.sp, fontWeight = FontWeight.Bold)
 
                 }
-                // Вертикальная черта для разделения
+
                 Box(
                     modifier = Modifier
                         .width(1.dp)
                         .height(40.dp)
                         .background(Color.Gray.copy(alpha = 0.5f))
                 )
-                // Второй элемент
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -234,14 +234,14 @@ fun CardMarking(viewModel: SortingViewModel, currentAlgorithm: Int){
                         color = Color.Gray,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
-//                    Text(
-//                        text = if (state.j < state.list.size - state.i - 1) {
-//                            "${state.list[state.j + 1]}"
-//                        } else "—",
-//                        fontSize = 16.sp,
-//                        fontWeight = FontWeight.Bold,
-//                        color = Color.Black
-//                    )
+
+
+
+
+
+
+
+
                     Text(secondValue?.toString() ?: "—", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }

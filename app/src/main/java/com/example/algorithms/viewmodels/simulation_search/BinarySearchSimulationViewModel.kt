@@ -79,7 +79,7 @@ class BinarySearchSimulationViewModel : ViewModel(), SearchSimulationViewModel {
         searchJob?.cancel()
         searchJob = null
 
-        val newList = (1..49).map { (1..100).random() }         //.sorted()
+        val newList = (1..49).map { (1..100).random() }
         val defaultTarget = newList.last().toString()
         _state.update {
             it.copy(
@@ -107,7 +107,7 @@ class BinarySearchSimulationViewModel : ViewModel(), SearchSimulationViewModel {
             )
         }
         viewModelScope.launch {
-            delay(2000) // Задержка для отображения надписи "Сортировка..."
+            delay(2000)
             val sortedList = currentList.sorted()
             _state.update {
                 it.copy(
@@ -120,15 +120,15 @@ class BinarySearchSimulationViewModel : ViewModel(), SearchSimulationViewModel {
                 runSearch()
             }
         }
-        //_state.update { it.copy(isRunning = true, eliminatedIndices = emptySet(),) }
 
-//        searchJob = viewModelScope.launch {
-//            runSearch()
-//        }
+
+
+
+
     }
 
     private suspend fun runSearch() {
-        //Сортировка
+
         val originalList = _state.value.list.sorted()
         _state.update { it.copy(list = originalList) }
 
@@ -162,11 +162,11 @@ class BinarySearchSimulationViewModel : ViewModel(), SearchSimulationViewModel {
             delay(_state.value.delayTimeBinary)
 
             if (current < target) {
-                // Отбрасываем левую часть включая mid
+
                 eliminated.addAll(left..mid)
                 left = mid + 1
             } else {
-                // Отбрасываем правую часть включая mid
+
                 eliminated.addAll(mid..right)
                 right = mid - 1
             }

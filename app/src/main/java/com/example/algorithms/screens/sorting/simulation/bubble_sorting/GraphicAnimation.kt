@@ -22,7 +22,7 @@ import com.example.algorithms.viewmodels.simulation_sorting.base_class_for_simul
 @Composable
 fun GraphicAnimation(viewModel: SortingViewModel){
     val state by viewModel.state.collectAsState()
-    // Графическая анимация сортировки
+
     Canvas(
         modifier = Modifier
             .fillMaxWidth()

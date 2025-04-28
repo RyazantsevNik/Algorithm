@@ -63,15 +63,15 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFE3F2FD), // Светлый голубой (верх)
-                        Color(0xFFFFFFFF)   // Белый (низ)
+                        Color(0xFFE3F2FD),
+                        Color(0xFFFFFFFF)
                     )
                 )
             )
             .padding(top = 8.dp, start = 8.dp, end = 8.dp)
     ) {
 
-        // Управление размером массива
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,7 +111,7 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
             )
         }
 
-        // Диалог редактирования массива
+
         if (state.isEditing) {
             AlertDialog(
                 onDismissRequest = { viewModel.toggleEditing() },
@@ -144,23 +144,23 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
                 }
             )
         }
-        // Графическая анимация
+
         GraphicAnimationForSelectionSort(viewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Управление скоростью
+
         SpeedControl(viewModel)
 
-        //Карточки шаг/сравнение
+
         CardMarking(viewModel,2)
 
-        //Прогресс бар
+
         CustomProgressBar(progress = state.progress.toInt())
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопки управления
+
         Row(
             modifier = Modifier
                 .fillMaxWidth().fillMaxHeight()
@@ -224,12 +224,12 @@ fun GraphicAnimationForSelectionSort(viewModel: SortingViewModel) {
                     else -> unsortedColor
                 }
 
-                // Используем animatedOffsets только для горизонтального смещения
+
                 val offsetX = viewModel.animatedOffsets[index].value * barWidth
                 val barX = index * barWidth + offsetX
-                val barY = size.height - height // Убираем вертикальное смещение
+                val barY = size.height - height
 
-                // Тень для блока
+
                 drawRoundRect(
                     color = Color.Black.copy(alpha = 0.2f),
                     topLeft = Offset(barX + 4, barY + 4),
@@ -237,7 +237,7 @@ fun GraphicAnimationForSelectionSort(viewModel: SortingViewModel) {
                     cornerRadius = CornerRadius(8f, 8f)
                 )
 
-                // Основной блок
+
                 drawRoundRect(
                     brush = Brush.verticalGradient(
                         colors = listOf(color.copy(alpha = 0.8f), color)
@@ -247,7 +247,7 @@ fun GraphicAnimationForSelectionSort(viewModel: SortingViewModel) {
                     cornerRadius = CornerRadius(8f, 8f)
                 )
 
-                // Текст (значение блока)
+
                 drawContext.canvas.nativeCanvas.apply {
                     drawText(
                         value.toString(),

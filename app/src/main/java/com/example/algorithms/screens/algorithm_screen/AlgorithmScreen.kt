@@ -44,7 +44,7 @@ fun AlgorithmScreen(
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = Color(0xFF0D47A1) // Тёмно-синий для заголовка
+                            color = Color(0xFF0D47A1)
                         ),
                         maxLines = 1
                     )
@@ -59,16 +59,6 @@ fun AlgorithmScreen(
                         )
                     }
                 },
-//                actions = {
-//                    IconButton(onClick = { /* Обработка клика настроек */ }) {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_info_button),
-//                            contentDescription = "Settings",
-//                            tint = Color.Unspecified,
-//                            modifier = Modifier.size(24.dp)
-//                        )
-//                    }
-//                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF90CAF9)
                 ),
@@ -83,8 +73,8 @@ fun AlgorithmScreen(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFFE3F2FD), // Светлый голубой (верх)
-                            Color.White      // Белый (низ)
+                            Color(0xFFE3F2FD),
+                            Color.White
                         )
                     )
                 )

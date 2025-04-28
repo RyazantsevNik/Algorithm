@@ -11,7 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LinearSearchViewModel : ViewModel() {
-    // входные данные и искомое
+
     val data = listOf(5, 3, 9, 1, 4, 7)
     val target = 9
 
@@ -44,7 +44,7 @@ class LinearSearchViewModel : ViewModel() {
 
     fun goToEnd() {
         stopAuto()
-            //Если сортировка не началась, ищет вручную
+
         if (foundIndex == null) {
             for ((index, value) in data.withIndex()) {
                 if (value == target) {
@@ -55,9 +55,9 @@ class LinearSearchViewModel : ViewModel() {
         }
 
         _stepIndex.value = if (foundIndex != null) {
-            foundIndex!! + 1 // Переход к шагу с "элемент найден"
+            foundIndex!! + 1
         } else {
-            data.size + 1 // Элемент не найден
+            data.size + 1
         }
 
         _currentIndex.value = foundIndex ?: -1

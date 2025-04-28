@@ -110,7 +110,7 @@ fun ProfileScreen(
     authViewModel: AuthViewModel = koinViewModel(),
     navController: NavController
 ) {
-    var expanded by remember { mutableStateOf(false) } // Для отображения меню
+    var expanded by remember { mutableStateOf(false) }
     val profileState by viewModel.profileState.collectAsState()
     val isAuthenticated by AuthState.isAuthenticated.collectAsState()
     var showEditDialog by remember { mutableStateOf(false) }
@@ -133,7 +133,6 @@ fun ProfileScreen(
 
     val density = LocalDensity.current.density
 
-    // Переместим вычисление menuOffset в onGloballyPositioned внутри Box
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -150,17 +149,14 @@ fun ProfileScreen(
                     .padding(start = 16.dp, top = 62.dp, end = 16.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Box для фото профиля
                 Box(
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)
                         .background(SoftBlue)
-                        .clickable { expanded = true } // Открыть меню при нажатии
+                        .clickable { expanded = true }
                         .onGloballyPositioned { layoutCoordinates ->
-                            // Вычисляем позицию меню относительно фото
                             val photoBoxBounds = layoutCoordinates.boundsInRoot()
-                            // Преобразуем пиксели в dp с использованием LocalDensity
                             menuOffset = DpOffset(
                                 x = (photoBoxBounds.left / density).dp,
                                 y = (photoBoxBounds.bottom / density).dp
@@ -171,7 +167,7 @@ fun ProfileScreen(
                     profileState?.profilePicture?.let { url ->
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data("http://10.0.2.2:8000${url}")
+                                .data("http://5.35.126.14:8000${url}")
                                 .crossfade(true)
                                 .build(),
                             contentDescription = "Фото профиля",
@@ -185,46 +181,45 @@ fun ProfileScreen(
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
 
-                    // Иконка карандаша
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Редактировать фото",
                         modifier = Modifier
                             .size(24.dp)
                             .align(Alignment.BottomEnd)
-                            .offset(x = (-12).dp, y = (-8).dp) // Смещение внутрь круга
-                            .clickable { expanded = true } // Открытие меню
-                            .background(Color.White, CircleShape) // Белый фон с округлыми углами
-                            .padding(4.dp), // Немного отступа для создания эффекта окружности
-                        tint = Color.Black // Черный цвет иконки
+                            .offset(x = (-12).dp, y = (-8).dp)
+                            .clickable { expanded = true }
+                            .background(Color.White, CircleShape)
+                            .padding(4.dp),
+                        tint = Color.Black
                     )
                 }
 
-                // Всплывающее меню для изменения и удаления фото
+
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     offset = menuOffset.copy(
-                        // Корректируем смещение по оси X и Y для точного позиционирования
+
                         x = menuOffset.x - 20.dp,
                         y = if (profileState?.profilePicture != null) {
-                            menuOffset.y + 52.dp // Когда есть фото, смещаем вниз для двух элементов
+                            menuOffset.y + 52.dp
                         } else {
-                            menuOffset.y + 10.dp // Когда фото нет, немного выше, чтобы избежать большого пробела
+                            menuOffset.y + 10.dp
                         }
                     )
                 ) {
-                    // Пункт "Изменить фото"
+
                     DropdownMenuItem(
                         text = { Text("Изменить фото") },
                         onClick = {
-                            // Логика для изменения фото
+
                             showImagePicker = true
                             expanded = false
                         }
                     )
 
-                    // Пункт "Удалить фото"
+
                     if (profileState?.profilePicture != null) {
                         DropdownMenuItem(
                             text = { Text("Удалить фото") },
@@ -288,7 +283,7 @@ fun ProfileScreen(
                         OutlinedButton(
                             onClick = {
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RyazantsevNik/Algorithm.git"))
-                                // Используем context для вызова startActivity
+
                                 context.startActivity(intent)
                             },
                             modifier = Modifier
@@ -370,7 +365,7 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Иконка пользователя
+
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Иконка профиля",
@@ -380,7 +375,7 @@ fun ProfileScreen(
                     tint = DarkBlue
                 )
 
-                // Заголовок
+
                 Text(
                     text = "Войдите в аккаунт",
                     style = MaterialTheme.typography.headlineLarge,
@@ -388,7 +383,7 @@ fun ProfileScreen(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                // Описание
+
                 Text(
                     text = "Чтобы получить доступ к профилю, чату с AI и отслеживать свой прогресс",
                     style = MaterialTheme.typography.bodyLarge,
@@ -398,12 +393,12 @@ fun ProfileScreen(
                     modifier = Modifier.padding(bottom = 40.dp)
                 )
 
-                // Кнопка входа
+
                 Button(
                     onClick = { navController.navigate(AppRoutes.AUTH_SCREEN) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp), // Стандартная высота кнопки MD3
+                        .height(56.dp),
                     shape = MaterialTheme.shapes.medium,
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 2.dp,
@@ -460,7 +455,6 @@ fun EditProfileDialog(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
-    // Валидация
     val isPasswordSectionTouched = currentPassword.isNotEmpty() || newPassword.isNotEmpty() || confirmPassword.isNotEmpty()
     val isPasswordValid = when {
         isPasswordSectionTouched && (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) -> {
@@ -607,82 +601,6 @@ fun EditProfileDialog(
         }
     }
 }
-//@Composable
-//fun EditProfileDialog(
-//    user: UserResponse,
-//    onDismiss: () -> Unit,
-//    onSave: (UserResponse) -> Unit
-//) {
-//    var username by remember { mutableStateOf(user.username) }
-//    var email by remember { mutableStateOf(user.email) }
-//
-//    Dialog(onDismissRequest = onDismiss) {
-//        Card(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp),
-//            colors = CardDefaults.cardColors(
-//                containerColor = MaterialTheme.colorScheme.surface
-//            )
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp)
-//            ) {
-//                Text(
-//                    "Редактировать профиль",
-//                    style = MaterialTheme.typography.titleLarge,
-//                    modifier = Modifier.padding(bottom = 16.dp)
-//                )
-//
-//                OutlinedTextField(
-//                    value = username,
-//                    onValueChange = { username = it },
-//                    label = { Text("Имя пользователя") },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(vertical = 8.dp)
-//                )
-//
-//                OutlinedTextField(
-//                    value = email,
-//                    onValueChange = { email = it },
-//                    label = { Text("Email") },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(vertical = 8.dp)
-//                )
-//
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(top = 16.dp),
-//                    horizontalArrangement = Arrangement.End
-//                ) {
-//                    TextButton(onClick = onDismiss) {
-//                        Text("Отмена")
-//                    }
-//                    Button(
-//                        onClick = {
-//                            onSave(
-//                                UserResponse(
-//                                    id = user.id,
-//                                    username = username,
-//                                    email = email,
-//                                    profilePicture = user.profilePicture
-//                                )
-//                            )
-//                        },
-//                        modifier = Modifier.padding(start = 8.dp)
-//                    ) {
-//                        Text("Сохранить")
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun LearningProgress(progress: Float) {
@@ -767,7 +685,6 @@ fun HelpScreen(navController: NavController) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Логотип приложения
             Image(
                 painter = painterResource(id = R.drawable.logo_for_app),
                 contentDescription = "App Logo",
@@ -776,7 +693,6 @@ fun HelpScreen(navController: NavController) {
                     .padding(vertical = 24.dp)
             )
 
-            // Основные разделы справки
             HelpSection(title = "Основные функции") {
                 Text(
                     text = "• Интерактивные уроки по алгоритмам\n" +
@@ -816,7 +732,6 @@ fun HelpScreen(navController: NavController) {
                 )
             }
 
-            // Блок с информацией о приложении
             HelpSection(title = "") {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -837,7 +752,6 @@ fun HelpScreen(navController: NavController) {
                 }
             }
 
-            // Кнопка поддержки
             Button(
                 onClick = { context.openSupportEmail() },
                 modifier = Modifier
@@ -859,7 +773,6 @@ fun HelpScreen(navController: NavController) {
     }
 }
 
-// Вспомогательные компоненты
 @Composable
 private fun HelpSection(
     title: String,
@@ -919,11 +832,10 @@ private fun ExpandableFAQ(question: String, answer: String) {
     }
 }
 
-// Расширения для работы с контекстом
 private fun getAppVersion(context: Context): String {
     return try {
         val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-        packageInfo.versionName ?: "1.0.0" // Обработка nullable значения
+        packageInfo.versionName ?: "1.0.0"
     } catch (e: Exception) {
         "1.0.0"
     }

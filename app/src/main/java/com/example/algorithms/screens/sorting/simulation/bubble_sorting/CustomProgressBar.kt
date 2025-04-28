@@ -50,7 +50,7 @@ fun CustomProgressBar(progress: Int) {
                     )
                     .width(300.dp * progress / 100)
             )
-            // Text to display the progress percentage
+
             Text(
                 text = "$progress %",
                 modifier = Modifier.align(Alignment.Center),

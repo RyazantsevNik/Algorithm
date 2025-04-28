@@ -74,7 +74,7 @@ fun BinarySearchVisualizationScreen(navController: NavHostController) {
                 target = viewModel.target
             )
 
-            Spacer(modifier = Modifier.height(124.dp))
+            Spacer(modifier = Modifier.height(104.dp))
 
             SearchInfoCard(target = viewModel.target)
 
@@ -290,7 +290,7 @@ fun BinarySearchVisualizer(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
 
-                    // Линия сравнения
+
                     if (isCurrent && currentStep is BinarySearchViewModel.SearchStep.CompareValues) {
                         Text(
                             text = when {
@@ -306,7 +306,7 @@ fun BinarySearchVisualizer(
                         Spacer(modifier = Modifier.height(40.dp))
                     }
 
-                    // Сам элемент массива
+
                     Box(
                         modifier = Modifier
                             .size(48.dp)

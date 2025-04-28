@@ -65,24 +65,24 @@ fun LinearSearchVisualizationScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Карточка с шагом
+
             StepCard(stepIndex = stepIndex, explanation = explanation)
 
             Spacer(modifier = Modifier.height(86.dp))
 
-            // Визуализация массива
+
             LinearSearchVisualizer(
                 data = viewModel.data,
                 currentIndex = currentIndex,
                 target = viewModel.target
             )
 
-            Spacer(modifier = Modifier.height(124.dp))
+            Spacer(modifier = Modifier.height(104.dp))
 
             SearchInfoCard(target = viewModel.target)
 
             Spacer(modifier = Modifier.height(12.dp))
-            // Панель управления
+
             LinearControlPanel(viewModel = viewModel)
         }
     }
@@ -90,7 +90,7 @@ fun LinearSearchVisualizationScreen(navController: NavHostController) {
 
 @Composable
 fun LinearControlPanel(viewModel: LinearSearchViewModel) {
-    // Кнопки управления
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -207,7 +207,7 @@ fun LinearSearchVisualizer(
             data.forEachIndexed { index, value ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (index == currentIndex) {
-                        // Искомое значение "движется" с лёгкой анимацией вверх-вниз
+
                         Text(
                             text = target.toString(),
                             color = Color(0xFFEF6C00),
@@ -225,8 +225,8 @@ fun LinearSearchVisualizer(
                             .clip(RoundedCornerShape(8.dp))
                             .background(
                                 when {
-                                    index == currentIndex && value == target -> Color(0xFF66BB6A) // найден
-                                    index == currentIndex -> Color(0xFFFFEB3B) // текущий
+                                    index == currentIndex && value == target -> Color(0xFF66BB6A)
+                                    index == currentIndex -> Color(0xFFFFEB3B)
                                     else -> Color(0xFFE0E0E0)
                                 }
                             ),

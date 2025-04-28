@@ -12,7 +12,6 @@ class AlgorithmsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // Проверяем, не был ли Koin уже инициализирован
         if (GlobalContext.getOrNull() == null) {
             startKoin {
                 androidLogger(Level.ERROR)

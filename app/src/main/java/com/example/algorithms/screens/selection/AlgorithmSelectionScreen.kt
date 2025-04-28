@@ -54,8 +54,8 @@ fun AlgorithmSelectionScreen(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFFE3F2FD), // Светлый голубой (верх)
-                            Color(0xFFFFFFFF)   // Белый (низ)
+                            Color(0xFFE3F2FD),
+                            Color(0xFFFFFFFF)
                         )
                     )
                 )
@@ -87,7 +87,7 @@ fun AlgorithmSelectionScreen(
                 Text(
                     text = "Выберите раздел",
                     style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
-                    color = Color(0xFF0D47A1), // Тёмно-синий
+                    color = Color(0xFF0D47A1),
                     modifier = Modifier
                         .padding(bottom = 20.dp)
                         .graphicsLayer { this.alpha = alpha }
@@ -95,14 +95,14 @@ fun AlgorithmSelectionScreen(
                 Text(
                     text = "Изучите основы алгоритма или попробуйте его в действии!",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF455A64), // Голубовато-серый
+                    color = Color(0xFF455A64),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(bottom = 20.dp)
                         .graphicsLayer { this.alpha = alpha }
                 )
 
-                // Карточки разделов
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxWidth()
@@ -110,8 +110,8 @@ fun AlgorithmSelectionScreen(
                     SectionCard(
                         title = "Обучение",
                         painter = painterResource(id = R.drawable.ic_learning_card),
-                        backgroundColor = Color(0xFFBBDEFB), // Светло-голубой
-                        contentColor = Color(0xFF0D47A1),    // Тёмно-синий
+                        backgroundColor = Color(0xFFBBDEFB),
+                        contentColor = Color(0xFF0D47A1),
                         description = "Изучите теорию, примеры и шаги алгоритма",
                         onClick = { onLearningClick(algorithmTitle) },
                         modifier = Modifier
@@ -122,8 +122,8 @@ fun AlgorithmSelectionScreen(
                     SectionCard(
                         title = "Симуляция",
                         painter = painterResource(id = R.drawable.ic_visualization_card),
-                        backgroundColor = Color(0xFFC8E6C9), // Светло-зелёный
-                        contentColor = Color(0xFF1B5E20),    // Тёмно-зелёный
+                        backgroundColor = Color(0xFFC8E6C9),
+                        contentColor = Color(0xFF1B5E20),
                         description = "Смоделируйте работу алгоритма на своих данных",
                         onClick = { onSimulationClick(algorithmTitle) },
                         modifier = Modifier

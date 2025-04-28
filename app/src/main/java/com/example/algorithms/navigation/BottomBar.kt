@@ -51,7 +51,7 @@ fun BottomBar(navController: NavHostController) {
         containerColor = Color.White,
         tonalElevation = 8.dp
     ) {
-        // Главная
+
         NavigationBarItem(
             icon = {
                 NavigationItemIcon(
@@ -75,7 +75,7 @@ fun BottomBar(navController: NavHostController) {
             )
         )
 
-        // Алгоритмы
+
         NavigationBarItem(
             icon = {
                 NavigationItemIcon(
@@ -99,7 +99,7 @@ fun BottomBar(navController: NavHostController) {
             )
         )
 
-        // AI Чат
+
         NavigationBarItem(
             icon = {
                 NavigationItemIcon(
@@ -124,7 +124,7 @@ fun BottomBar(navController: NavHostController) {
             )
         )
 
-        // Профиль
+
         NavigationBarItem(
             icon = {
                 NavigationItemIcon(

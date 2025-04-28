@@ -97,7 +97,7 @@ fun CustomSlider(
                     .fillMaxWidth()
                     .onSizeChanged { width = it.width }
             ) {
-                // Thumb
+
                 Box(
                     Modifier
                         .zIndex(10f)
@@ -129,7 +129,7 @@ fun CustomSlider(
                     }
                 }
 
-                // Track
+
                 val strokeColor = MaterialTheme.colorScheme.onSurface
                 val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
 
@@ -171,7 +171,7 @@ fun DrawScope.drawSliderPath(
     val beyondBounds = size.width * 2
     val ramp = 72.dp.toPx()
 
-    // Определение пути
+
     path.moveTo(beyondBounds, midPointHeight)
     path.lineTo(activeWidth + ramp, midPointHeight)
     path.cubicTo(
@@ -192,7 +192,7 @@ fun DrawScope.drawSliderPath(
     )
     path.lineTo(-beyondBounds, midPointHeight)
 
-    // Закрытие пути
+
     val variation = 0.1f
     path.lineTo(-beyondBounds, midPointHeight + variation)
     path.lineTo(activeWidth - ramp, midPointHeight + variation)
@@ -214,7 +214,7 @@ fun DrawScope.drawSliderPath(
     )
     path.lineTo(beyondBounds, midPointHeight + variation)
 
-    // Обрезка пути
+
     val exclude = Path().apply {
         addRect(Rect(-beyondBounds, -beyondBounds, 0f, beyondBounds))
         addRect(Rect(size.width, -beyondBounds, beyondBounds, beyondBounds))
@@ -222,7 +222,7 @@ fun DrawScope.drawSliderPath(
     val trimmedPath = Path()
     trimmedPath.op(path, exclude, PathOperation.Difference)
 
-    // Рисование градуировки
+
     val pathMeasure = PathMeasure()
     pathMeasure.setPath(trimmedPath, false)
     val graduations = steps + 1
@@ -244,7 +244,7 @@ fun DrawScope.drawSliderPath(
         }
     }
 
-    // Рисование трека
+
     clipRect(
         left = -beyondBounds,
         top = -beyondBounds,

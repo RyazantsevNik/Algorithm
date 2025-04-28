@@ -40,10 +40,10 @@ class BubbleSortViewModel : SortingViewModel() {
                     } else {
                         _state.update { it.copy(j = it.j + 1) }
                     }
-                    updateProgress() // Обновляем прогресс после каждого шага
+                    updateProgress()
                 } else {
                     _state.update { it.copy(j = 0, i = it.i + 1) }
-                    updateProgress() // Обновляем прогресс при переходе к следующему i
+                    updateProgress()
                 }
                 delay(currentState.delayTime)
             } else {

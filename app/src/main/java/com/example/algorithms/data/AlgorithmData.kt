@@ -8,7 +8,7 @@ data class AlgorithmCategory(
 data class AlgorithmItem(
     val title: String,
     val isCompleted: Boolean = false,
-    val starRating: Int // Количество золотых звёзд (от 0 до 3)
+    val starRating: Int
 )
 
 val algorithmCategories = listOf(

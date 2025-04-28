@@ -62,8 +62,6 @@ class ChatViewModel(
     }
 
     fun loadChatHistory() {
-     //   Log.d("chat","isAuthenticated.value = ${isAuthenticated.value}")
-     //   if (!isAuthenticated.value ) return
         viewModelScope.launch {
             try {
                 val token = profileViewModel.getAuthToken()

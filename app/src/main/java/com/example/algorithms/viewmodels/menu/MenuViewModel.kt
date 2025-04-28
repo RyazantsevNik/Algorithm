@@ -19,7 +19,7 @@ class MenuViewModel : ViewModel() {
     )
     val expandedCategories: StateFlow<Map<String, Boolean>> = _expandedCategories.asStateFlow()
 
-    // Обновление состояния раскрытия категории
+
     fun toggleCategory(categoryTitle: String) {
         viewModelScope.launch {
             val currentStates = _expandedCategories.value.toMutableMap()
@@ -28,18 +28,18 @@ class MenuViewModel : ViewModel() {
         }
     }
 
-    // Состояние кликов на подпункты
+
     private val _clickedItems = MutableStateFlow(emptyMap<String, Boolean>())
 
 
-    // Обновление состояния клика на подпункт
+
     fun clickItem(itemTitle: String) {
         viewModelScope.launch {
             val currentStates = _clickedItems.value.toMutableMap()
             currentStates[itemTitle] = true
             _clickedItems.value = currentStates
 
-            delay(700) // Длительность анимации
+            delay(700)
             currentStates[itemTitle] = false
             _clickedItems.value = currentStates
         }

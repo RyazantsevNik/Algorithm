@@ -36,7 +36,7 @@ class ProfileViewModel(
     }
 
     fun loadProfile() {
-        if (_profileState.value != null) return  // Если профиль уже загружен, не делаем повторный запрос
+        if (_profileState.value != null) return
         
         viewModelScope.launch {
             try {
@@ -104,7 +104,7 @@ class ProfileViewModel(
                     
                     val response = profileApi.uploadProfilePhoto(bearerToken, photoPart)
                     
-                    //loadProfile()
+
                     refreshProfile()
                     
                 } else {

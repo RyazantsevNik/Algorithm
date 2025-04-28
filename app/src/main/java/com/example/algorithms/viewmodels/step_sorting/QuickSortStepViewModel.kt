@@ -12,7 +12,7 @@ class QuickSortStepViewModel : BaseSortStepViewModel() {
     private fun generateQuickSortSteps(arr: List<Int>): List<QuickSortStep> {
         val steps = mutableListOf<QuickSortStep>()
         val sortedIndices = mutableSetOf<Int>()
-        var sortedBoundary = 0 // Начальное значение sortedBoundary
+        var sortedBoundary = 0
 
         fun MutableList<Int>.swap(i: Int, j: Int) {
             val temp = this[i]
@@ -25,7 +25,7 @@ class QuickSortStepViewModel : BaseSortStepViewModel() {
                 val pivotIndex = high
                 val pivot = array[pivotIndex]
 
-                // Шаг: выбор опорного элемента
+
                 steps.add(QuickSortStep(
                     array = array.toList(),
                     pivotIndex = pivotIndex,
@@ -40,7 +40,7 @@ class QuickSortStepViewModel : BaseSortStepViewModel() {
 
                 for (i in low until high) {
                     if (array[i] < pivot) {
-                        // Шаг 1: фиксируем, что элемент меньше опорного
+
                         steps.add(QuickSortStep(
                             array = array.toList(),
                             pivotIndex = pivotIndex,
@@ -51,12 +51,12 @@ class QuickSortStepViewModel : BaseSortStepViewModel() {
                             sortedBoundary = sortedBoundary
                         ))
 
-                        // Шаг 2: выполняем обмен (если необходимо)
+
                         if (i != wall) {
                             array.swap(i, wall)
                         }
 
-                        // Шаг 3: фиксируем, что обмен произошел и стена сдвинулась
+
                         wall++
                         steps.add(QuickSortStep(
                             array = array.toList(),
@@ -81,7 +81,7 @@ class QuickSortStepViewModel : BaseSortStepViewModel() {
                 }
 
 
-                // Устанавливаем опорный элемент на окончательную позицию
+
                 array.swap(wall, pivotIndex)
                 sortedIndices.add(wall)
 

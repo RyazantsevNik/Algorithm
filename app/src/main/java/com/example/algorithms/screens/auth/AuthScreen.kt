@@ -159,7 +159,7 @@ fun AuthScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { 
-                    password = alphanumericFilter(it)  // Применяем фильтр
+                    password = alphanumericFilter(it)
                     val validation = Validators.validatePassword(password)
                     passwordError = validation.errorMessage
                 },

@@ -72,7 +72,7 @@ fun ChatScreen(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    // Для анимации "Думает..."
+
     val dotCount = remember { mutableStateOf(1) }
     LaunchedEffect(viewModel.loadingState.value) {
         while (viewModel.loadingState.value) {
@@ -81,7 +81,7 @@ fun ChatScreen(
         }
     }
 
-    // Загружаем историю чата при первом рендере
+
     LaunchedEffect(Unit) {
         viewModel.loadChatHistory()
     }
@@ -95,7 +95,7 @@ fun ChatScreen(
             LazyColumn(
                 state = scrollState,
                 modifier = Modifier.weight(1f),
-                reverseLayout = false // сообщения сверху вниз
+                reverseLayout = false
             ) {
                 items(viewModel.chatMessages) { message ->
                     MessageBubble(message = message)
@@ -186,7 +186,7 @@ fun ChatScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Логотип
+
                 Image(
                     painter = painterResource(id = R.drawable.ic_robot_logo),
                     contentDescription = "Логотип приложения",
@@ -196,7 +196,7 @@ fun ChatScreen(
                     contentScale = ContentScale.Fit
                 )
 
-                // Текст заголовка
+
                 Text(
                     text = "Для использования чата требуется авторизация",
                     modifier = Modifier
@@ -210,12 +210,12 @@ fun ChatScreen(
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                // Кнопка авторизации
+
                 Button(
                     onClick = { navController.navigate(AppRoutes.AUTH_SCREEN) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp), // Стандартная высота кнопки Material Design
+                        .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = DarkBlue,
                         contentColor = Color.White
@@ -273,7 +273,7 @@ fun MessageBubble(message: Message) {
                     AndroidView(
                         factory = { context ->
                             TextView(context).apply {
-                                setTextColor(android.graphics.Color.BLACK) // черный текст
+                                setTextColor(android.graphics.Color.BLACK)
                                 textSize = 16f
                                 val markwon = Markwon.create(context)
                                 markwon.setMarkdown(this, message.content)

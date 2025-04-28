@@ -1,6 +1,7 @@
 package com.example.algorithms.viewmodels.profile
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.algorithms.di.main_api.AuthApi
@@ -58,6 +59,7 @@ class AuthViewModel(
                 
                 TokenManager.saveToken(application, loginResponse.accessToken)
                 val userProfile = profileApi.getProfile("Bearer ${loginResponse.accessToken}")
+                Log.d("TokenAuth", loginResponse.accessToken)
                 
                 AuthState.setAuthenticated(true)
                 _authResult.value = AuthResult.Success(

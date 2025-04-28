@@ -13,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.algorithms.screens.auth.AuthScreen
 import com.example.algorithms.screens.chat.ChatScreen
+import com.example.algorithms.screens.graphs.BfsSearchScreen
+import com.example.algorithms.screens.graphs.DfsSearchScreen
 import com.example.algorithms.screens.selection.AlgorithmSelectionScreen
 import com.example.algorithms.screens.menu.AlgorithmsMenuScreen
 import com.example.algorithms.screens.menu.HomeScreen
@@ -54,7 +56,7 @@ fun AppNavigation() {
                 AlgorithmsMenuScreen(navController)
             }
 
-            // ✅ Создаём граф для чата
+
             composable(AppRoutes.AI_CHAT) {
                 ChatScreen(navController)
             }
@@ -110,6 +112,8 @@ fun AppNavigation() {
                     "Быстрая сортировка" -> QuickSortingLearningScreen(navController)
                     "Линейный поиск" -> LinearSearchLearning(navController)
                     "Бинарный поиск" -> BinarySearchLearning(navController)
+                    "Обход в глубину" -> DfsSearchScreen(navController)
+                    "Обход в ширину" -> BfsSearchScreen(navController)
                     // TODO Добавьте другие теории алгоритмов здесь
 
                     else -> TheoryScreen(navController, algorithmTitle)

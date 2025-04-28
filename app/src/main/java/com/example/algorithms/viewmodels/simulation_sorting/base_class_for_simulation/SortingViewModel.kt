@@ -147,18 +147,18 @@ abstract class SortingViewModel : ViewModel() {
     }
 
     fun updateArraySize(newSize: Int) {
-        if (newSize < 1 || newSize > 25) return  // Ограничение на размер массива
+        if (newSize < 1 || newSize > 25) return
 
         val currentList = _state.value.list.toMutableList()
 
         when {
             newSize > currentList.size -> {
-                // Увеличиваем массив, добавляя новые случайные элементы
+
                 val additionalElements = List(newSize - currentList.size) { (1..25).random() }
                 currentList.addAll(additionalElements)
             }
             newSize < currentList.size -> {
-                // Уменьшаем массив, удаляя последние элементы
+
                 currentList.subList(newSize, currentList.size).clear()
             }
         }
@@ -217,38 +217,38 @@ abstract class SortingViewModel : ViewModel() {
         }
     }
 
-    //norm
-//    suspend fun swapWithAnimation(index1: Int, index2: Int) {
-//        if (index1 == index2) return
-//
-//        val barWidth = 1f
-//        val horizontalOffsetDistance = barWidth * (index2 - index1).toFloat()
-//
-//        coroutineScope {
-//            launch {
-//                animatedOffsets[index1].animateTo(
-//                    horizontalOffsetDistance,
-//                    tween(_state.value.delayTime.toInt())
-//                )
-//            }
-//            launch {
-//                animatedOffsets[index2].animateTo(
-//                    -horizontalOffsetDistance,
-//                    tween(_state.value.delayTime.toInt())
-//                )
-//            }.join()
-//
-//            val newList = _state.value.list.toMutableList()
-//            val temp = newList[index1]
-//            newList[index1] = newList[index2]
-//            newList[index2] = temp
-//
-//            _state.update { it.copy(list = newList) }
-//
-//            animatedOffsets[index1].snapTo(0f)
-//            animatedOffsets[index2].snapTo(0f)
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

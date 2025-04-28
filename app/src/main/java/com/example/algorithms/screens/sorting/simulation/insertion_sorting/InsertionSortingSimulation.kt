@@ -67,14 +67,14 @@ fun InsertionSortingSimulation(viewModel: InsertionSortViewModel = getViewModel(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFE3F2FD), // Светлый голубой (верх)
-                        Color(0xFFFFFFFF)   // Белый (низ)
+                        Color(0xFFE3F2FD),
+                        Color(0xFFFFFFFF)
                     )
                 )
             )
             .padding(top = 8.dp, start = 8.dp, end = 8.dp)
     ) {
-        // Управление размером массива
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,7 +114,7 @@ fun InsertionSortingSimulation(viewModel: InsertionSortViewModel = getViewModel(
             )
         }
 
-        // Диалог редактирования массива
+
         if (state.isEditing) {
             AlertDialog(
                 onDismissRequest = { viewModel.toggleEditing() },
@@ -149,7 +149,7 @@ fun InsertionSortingSimulation(viewModel: InsertionSortViewModel = getViewModel(
         }
 
 
-        // Графика
+
         GraphicAnimationForInsertionSort(viewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -160,7 +160,7 @@ fun InsertionSortingSimulation(viewModel: InsertionSortViewModel = getViewModel(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопки управления
+
         Row(
             modifier = Modifier
                 .fillMaxWidth().fillMaxHeight()
@@ -209,26 +209,26 @@ fun GraphicAnimationForInsertionSort(viewModel: SortingViewModel) {
         if (viewModel.animatedOffsets.size == state.list.size) {
             state.list.forEachIndexed { index, value ->
                 val color = when {
-                    // 🔹 До начала сортировки — все фиолетовые
+
                     !state.isRunning && state.i == 0 -> Color(0xFFBB86FC)
 
-                    // 🔹 После завершения сортировки — все зелёные
+
                     state.i >= state.list.size -> Color(0xFF03DAC5)
 
-                    // ✅ Спец. случай: последний элемент после завершения
+
                     index == state.i && state.i == state.list.size - 1 && !state.isRunning -> Color(0xFF03DAC5)
 
-                    // 🔹 keyValue отрисовывается отдельно
+
                     state.keyIndex == index -> return@forEachIndexed
 
-                    // 🔹 Индекс участвует в сравнении
+
                     index == state.i && state.i < state.list.size -> Color.Red
                     index == state.currentComparisonIndex -> Color.Blue
 
-                    // 🔹 Уже отсортированные
+
                     index < state.i && index != state.currentComparisonIndex && index != state.i -> Color(0xFF03DAC5)
 
-                    // 🔹 Остальные — неотсортированные
+
                     else -> Color(0xFFBB86FC)
                 }
 
@@ -240,13 +240,13 @@ fun GraphicAnimationForInsertionSort(viewModel: SortingViewModel) {
                 drawBar(barX, barY, barWidth, height, value, color)
             }
 
-            // Отрисовка keyValue отдельно (если существует)
+
             val keyIndex = state.keyIndex
             val keyValue = state.keyValue
             if (keyIndex != null && keyValue != null) {
                 val height = (minOf(keyValue, 25) / 25f) * maxBarHeight
 
-                // 💡 Применяем animatedOffsets
+
                 val offsetX = viewModel.animatedOffsets[keyIndex].value * barWidth
                 val barX = keyIndex * barWidth + offsetX
                 val barY = size.height - height
@@ -257,7 +257,7 @@ fun GraphicAnimationForInsertionSort(viewModel: SortingViewModel) {
     }
 }
 
-// 🎨 Выносим отрисовку прямоугольника в отдельную функцию
+
 fun DrawScope.drawBar(
     x: Float,
     y: Float,

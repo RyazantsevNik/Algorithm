@@ -13,6 +13,8 @@ import com.example.algorithms.viewmodels.simulation_search.LinearSearchSimulatio
 import com.example.algorithms.viewmodels.simulation_sorting.BubbleSortViewModel
 import com.example.algorithms.viewmodels.simulation_sorting.InsertionSortViewModel
 import com.example.algorithms.viewmodels.simulation_sorting.SelectionSortViewModel
+import com.example.algorithms.viewmodels.step_graphs.BfsSearchViewModel
+import com.example.algorithms.viewmodels.step_graphs.DfsSearchViewModel
 import com.example.algorithms.viewmodels.step_search.BinarySearchViewModel
 import com.example.algorithms.viewmodels.step_search.LinearSearchViewModel
 import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
@@ -42,6 +44,8 @@ val appModule = module {
     viewModel { LinearSearchViewModel() }
     viewModel { BinarySearchViewModel() }
     viewModel { LinearSearchSimulationViewModel() }
+    viewModel { DfsSearchViewModel() }
+    viewModel { BfsSearchViewModel() }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ChatViewModel(get(), get(), get()) }              //chat
 }

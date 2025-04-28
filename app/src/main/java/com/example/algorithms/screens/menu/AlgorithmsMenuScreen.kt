@@ -246,9 +246,9 @@ fun SearchField(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = Color.Transparent,
-//            textColor = MaterialTheme.colorScheme.onSurface,
-//            placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//            leadingIconColor = MaterialTheme.colorScheme.primary
+
+
+
         ),
         shape = RoundedCornerShape(16.dp),
         singleLine = true,
@@ -353,10 +353,10 @@ fun SubItem(
     navController: NavHostController,
     viewModel: MenuViewModel
 ) {
-    // Градиент для фона карточки
+
     val gradientColors = listOf(
-        Color(0xFF1B679A), // Фиолетовый
-        Color(0xFF479BBC)  // Светло-фиолетовый
+        Color(0xFF1B679A),
+        Color(0xFF479BBC)
     )
 
     Card(
@@ -369,12 +369,12 @@ fun SubItem(
             },
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = RoundedCornerShape(16.dp) // Скругление углов
+        shape = RoundedCornerShape(16.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Brush.verticalGradient(gradientColors)) // Применяем градиент
+                .background(Brush.verticalGradient(gradientColors))
                 .padding(12.dp)
         ) {
             Row(
@@ -389,17 +389,17 @@ fun SubItem(
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
                         contentDescription = null,
-                        tint = Color.Yellow, // Яркий акцент
+                        tint = Color.Yellow,
                         modifier = Modifier.size(24.dp)
                     )
                     Column {
                         Text(
                             text = item.title,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White // Белый текст на градиенте
+                            color = Color.White
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        // Отображение звёзд в зависимости от starRating
+
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
@@ -407,7 +407,7 @@ fun SubItem(
                                 Icon(
                                     imageVector = Icons.Default.Star,
                                     contentDescription = null,
-                                    tint = if (index < item.starRating) Color(0xFFFFD700) else Color.Gray, // Золотые и серые звёзды
+                                    tint = if (index < item.starRating) Color(0xFFFFD700) else Color.Gray,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -415,12 +415,12 @@ fun SubItem(
                     }
                 }
 
-                // Иконка "Пройдено"
+
                 if (item.isCompleted) {
                     Icon(
                         imageVector = Icons.Default.CheckCircle,
                         contentDescription = "Пройдено",
-                        tint = Color.Green, // Зелёная иконка
+                        tint = Color.Green,
                         modifier = Modifier.size(24.dp)
                     )
                 }

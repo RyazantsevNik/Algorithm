@@ -31,13 +31,13 @@ data class SimulationState(
 
 class LinearSearchSimulationViewModel : ViewModel(), SearchSimulationViewModel {
 
-    // Состояние
+
     private val _state = MutableStateFlow(SimulationState())
     override val state: StateFlow<SimulationState> = _state.asStateFlow()
 
     private var searchJob: Job? = null
 
-    // Анимации
+
     private val animatedOffsets = mutableStateListOf<Animatable<Float, AnimationVector1D>>()
 
     init {

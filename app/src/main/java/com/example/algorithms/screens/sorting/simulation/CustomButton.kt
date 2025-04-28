@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CustomButton(
     text: String,
-    onClick: () -> Unit, // Убираем @Composable
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color.White,
     borderColor: Color = Color.Gray,

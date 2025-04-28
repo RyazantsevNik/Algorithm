@@ -18,10 +18,10 @@ class InsertionSortStepViewModel : BaseSortStepViewModel() {
             steps.add(InsertionSortStep(a.toList(), selectedIndices = Pair(i, i), sortedBoundary = i))
 
             while (j > 0 && a[j - 1] > a[j]) {
-                // Меняем элементы местами
+
                 a[j] = a[j - 1].also { a[j - 1] = a[j] }
 
-                // Добавляем шаг после обмена
+
                 steps.add(InsertionSortStep(a.toList(), selectedIndices = Pair(j - 1, j), sortedBoundary = i))
                 j--
             }

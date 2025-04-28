@@ -40,7 +40,7 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Верхняя часть: карточка с объяснением шага (фиксированная высота)
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -52,7 +52,7 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            // Средняя часть: визуализация массива
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -64,7 +64,7 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
                 )
             }
 
-            // Карточка с информацией об отсортированных элементах
+
             SortedElementsCard(viewModel = viewModel)
 
             Row(
@@ -143,7 +143,7 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
                     )
                 }
             }
-            // Кнопка "Авто"/"Пауза"
+
             Button(
                 onClick = { viewModel.toggleAutoMode() },
                 modifier = Modifier
@@ -163,7 +163,7 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
             }
         }
 
-        // Автоматический режим
+
         LaunchedEffect(key1 = viewModel.isAuto, key2 = viewModel.currentStepIndex) {
             if (viewModel.isAuto && viewModel.currentStepIndex < viewModel.steps.size - 1) {
                 kotlinx.coroutines.delay(800L)
