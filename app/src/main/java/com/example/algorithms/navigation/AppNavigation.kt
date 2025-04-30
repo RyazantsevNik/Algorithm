@@ -15,6 +15,8 @@ import com.example.algorithms.screens.auth.AuthScreen
 import com.example.algorithms.screens.chat.ChatScreen
 import com.example.algorithms.screens.graphs.BfsSearchScreen
 import com.example.algorithms.screens.graphs.DfsSearchScreen
+import com.example.algorithms.screens.graphs.simulation.BfsGraphSimulationScreen
+import com.example.algorithms.screens.graphs.simulation.DfsGraphSimulationScreen
 import com.example.algorithms.screens.selection.AlgorithmSelectionScreen
 import com.example.algorithms.screens.menu.AlgorithmsMenuScreen
 import com.example.algorithms.screens.menu.HomeScreen
@@ -133,6 +135,8 @@ fun AppNavigation() {
                     "Сортировка вставками" -> InsertionSortingVisualizationScreen(navController)
                     "Линейный поиск" -> LinearSearchSimulationScreen(navController)
                     "Бинарный поиск" -> BinarySearchSimulationScreen(navController)
+                    "Обход в ширину" -> BfsGraphSimulationScreen(navController)
+                    "Обход в глубину" -> DfsGraphSimulationScreen(navController)
                     // TODO Добавьте другие практики алгоритмов здесь
 
                     else -> PracticeScreen(navController, algorithmTitle)

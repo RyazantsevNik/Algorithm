@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -58,13 +60,14 @@ fun BubbleSortingSimulation(viewModel: BubbleSortViewModel = getViewModel()) {
                     )
                 )
             )
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+            .padding(start = 8.dp, end = 8.dp)
+            .verticalScroll(rememberScrollState())
     ) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 4.dp),
+                .padding(top = 4.dp, bottom = 4.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -136,7 +139,7 @@ fun BubbleSortingSimulation(viewModel: BubbleSortViewModel = getViewModel()) {
 
         GraphicAnimation(viewModel)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
 
         SpeedControl(viewModel)
@@ -148,7 +151,7 @@ fun BubbleSortingSimulation(viewModel: BubbleSortViewModel = getViewModel()) {
 
         CustomProgressBar(progress = state.progress.toInt())
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
 
         Row(

@@ -9,6 +9,8 @@ import com.example.algorithms.viewmodels.chat.ChatViewModel
 import com.example.algorithms.viewmodels.menu.MenuViewModel
 import com.example.algorithms.viewmodels.profile.AuthViewModel
 import com.example.algorithms.viewmodels.profile.ProfileViewModel
+import com.example.algorithms.viewmodels.simulation_graphs.BfsGraphSimulationViewModel
+import com.example.algorithms.viewmodels.simulation_graphs.DfsGraphSimulationViewModel
 import com.example.algorithms.viewmodels.simulation_search.LinearSearchSimulationViewModel
 import com.example.algorithms.viewmodels.simulation_sorting.BubbleSortViewModel
 import com.example.algorithms.viewmodels.simulation_sorting.InsertionSortViewModel
@@ -46,6 +48,8 @@ val appModule = module {
     viewModel { LinearSearchSimulationViewModel() }
     viewModel { DfsSearchViewModel() }
     viewModel { BfsSearchViewModel() }
+    viewModel { BfsGraphSimulationViewModel() }
+    viewModel { DfsGraphSimulationViewModel() }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ChatViewModel(get(), get(), get()) }              //chat
 }

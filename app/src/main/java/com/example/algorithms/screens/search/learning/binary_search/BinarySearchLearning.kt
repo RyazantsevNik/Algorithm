@@ -68,6 +68,7 @@ fun BinarySearchLearning(navController: NavHostController) {
         },
         content = {
             if (showIntro) {
+                Spacer(modifier = Modifier.height(4.dp))
                 IntroScreen(
                     algorithmTitle = "Бинарный поиск",
                     principleContent = "Алгоритм бинарного поиска находит искомый элемент путём деления массива пополам на каждом шаге и выбора той половины, где может находиться элемент.",

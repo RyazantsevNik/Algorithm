@@ -50,7 +50,7 @@ fun DfsSearchScreen(navController: NavHostController) {
         ) {
             StepCard(currentStep,explanation)
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
 
             DfsGraphVisualizer(
@@ -59,7 +59,7 @@ fun DfsSearchScreen(navController: NavHostController) {
                 remainingCandidates = remainingCandidates
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             ControlPanel(viewModel)
 

@@ -11,6 +11,7 @@ val BackgroundWhite = Color(0xFFF5F5F5)   // Фоновый белый
 val TextPrimary = Color(0xFF1E1E1E)      // Основной текст
 val TextSecondary = Color(0xFF757575)     // Вторичный текст
 val ErrorRed = Color(0xFFE57373)          // Цвет ошибки
+val DarkGreen = Color(0xFF106701)
 
 // Цвета для карточек и элементов
 val SoftGreen = Color(0xFF81C784)        // Мягкий зеленый

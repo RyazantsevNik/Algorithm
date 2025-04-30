@@ -68,14 +68,14 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
                     )
                 )
             )
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+            .padding(start = 8.dp, end = 8.dp)
     ) {
 
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 4.dp),
+                .padding(top = 4.dp, bottom = 4.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -147,7 +147,7 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
 
         GraphicAnimationForSelectionSort(viewModel)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
 
         SpeedControl(viewModel)
@@ -158,7 +158,7 @@ fun SelectionSortingSimulation(viewModel: SelectionSortViewModel = getViewModel(
 
         CustomProgressBar(progress = state.progress.toInt())
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
 
         Row(
@@ -199,7 +199,7 @@ fun GraphicAnimationForSelectionSort(viewModel: SortingViewModel) {
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(280.dp)
             .padding(vertical = 8.dp)
     ) {
         val barWidth = size.width / state.list.size

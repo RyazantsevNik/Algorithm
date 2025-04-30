@@ -26,7 +26,7 @@ fun GraphicAnimation(viewModel: SortingViewModel){
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(280.dp)
             .padding(top = 8.dp)
     ) {
         val barWidth = size.width / state.list.size
