@@ -200,8 +200,8 @@ fun LinearSearchVisualizer(viewModel: LinearSearchSimulationViewModel) {
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(7),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(9.dp),
+        horizontalArrangement = Arrangement.spacedBy(9.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
         itemsIndexed(state.list) { index, value ->
@@ -210,7 +210,7 @@ fun LinearSearchVisualizer(viewModel: LinearSearchSimulationViewModel) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(6.dp))
                     .background(
                         when {
                             value == state.targetInput.toIntOrNull() && isCurrent -> Color(0xFF66BB6A)
@@ -218,7 +218,8 @@ fun LinearSearchVisualizer(viewModel: LinearSearchSimulationViewModel) {
                             isDisabled -> Color(0xFF9E9E9E)
                             else -> Color(0xFFE0E0E0)
                         }
-                    ),
+                    )
+                    ,
                 contentAlignment = Alignment.Center
             ) {
                 Text(

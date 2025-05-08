@@ -27,12 +27,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.algorithms.R
 import com.example.algorithms.screens.sorting.learning.IntroScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.algorithms.viewmodels.step_search.LinearSearchViewModel
+import android.util.Log
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LinearSearchLearning(navController: NavHostController) {
+fun LinearSearchLearning(
+    navController: NavHostController,
+    userToken: String
+) {
     var showIntro by remember { mutableStateOf(true) }
+    val viewModel: LinearSearchViewModel = viewModel()
+    Log.d("LinearSearchLearning", "Setting token: ${userToken.isNotEmpty()}")
+    viewModel.setToken(userToken)
 
     Scaffold(
         topBar = {

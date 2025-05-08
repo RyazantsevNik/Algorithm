@@ -8,13 +8,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.math.log2
 
+class BinarySearchViewModel : ViewModel(), KoinComponent {
+    private val progressViewModel: ProgressViewModel by inject()
+    private var isCompleted = false
+    private var userToken: String? = null
 
-class BinarySearchViewModel : ViewModel() {
+    fun setToken(token: String) {
+        userToken = token
+    }
 
     sealed class SearchStep {
         object Initial : SearchStep()
@@ -61,8 +70,6 @@ class BinarySearchViewModel : ViewModel() {
     private val _stepHistory = mutableStateListOf<SearchStep>()
     val stepHistory: List<SearchStep> = _stepHistory
 
-
-
     fun goToNextStep() {
         when (val step = _currentStep.value) {
             is SearchStep.Initial -> calculateMid()
@@ -80,6 +87,19 @@ class BinarySearchViewModel : ViewModel() {
         }
         _stepIndex.intValue++
         _stepHistory.add(_currentStep.value)
+
+        if (_currentStep.value is SearchStep.Found || _currentStep.value is SearchStep.NotFound) {
+            if (!isCompleted) {
+                isCompleted = true
+                userToken?.let { token ->
+                    progressViewModel.updateProgress(
+                        token = token,
+                        algorithm = "binary_search",
+                        completed = true
+                    )
+                }
+            }
+        }
     }
 
     private fun calculateMid() {
@@ -110,14 +130,12 @@ class BinarySearchViewModel : ViewModel() {
                 _explanation.value = "Элемент $target найден на позиции $mid"
             }
             "less" -> {
-
                 (_left.intValue..mid).forEach { _disabledIndices.add(it) }
                 _left.intValue = mid + 1
                 _currentStep.value = SearchStep.AdjustBounds(_left.intValue, _right.intValue)
                 _explanation.value = "Обновляем границы поиска: [${_left.intValue}, ${_right.intValue}] → идём вправо"
             }
             else -> {
-
                 (mid.._right.intValue).forEach { _disabledIndices.add(it) }
                 _right.intValue = mid - 1
                 _currentStep.value = SearchStep.AdjustBounds(_left.intValue, _right.intValue)
@@ -143,7 +161,6 @@ class BinarySearchViewModel : ViewModel() {
         stopAuto()
         goToStart()
 
-
         while (_currentStep.value !is SearchStep.Found && _currentStep.value !is SearchStep.NotFound) {
             goToNextStep()
         }
@@ -154,7 +171,6 @@ class BinarySearchViewModel : ViewModel() {
             val lastIndex = _stepHistory.size - 1
             _stepHistory.removeAt(lastIndex)
             val previousStep = _stepHistory.last()
-
 
             when (previousStep) {
                 is SearchStep.Initial -> {

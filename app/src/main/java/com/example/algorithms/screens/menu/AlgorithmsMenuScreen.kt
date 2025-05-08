@@ -1,12 +1,15 @@
 package com.example.algorithms.screens.menu
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,22 +27,32 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Fort
+import androidx.compose.material.icons.filled.LinearScale
+import androidx.compose.material.icons.filled.Merge
+import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.BubbleChart
+import androidx.compose.material.icons.filled.AccountTree
+import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.CallSplit
+import androidx.compose.material.icons.filled.Expand
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -47,13 +60,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,9 +73,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -86,17 +98,34 @@ import com.example.algorithms.ui.theme.PastelPurple
 import com.example.algorithms.ui.theme.PrimaryBlue
 import com.example.algorithms.ui.theme.SoftGreen
 import com.example.algorithms.ui.theme.SoftOrange
-import com.example.algorithms.ui.theme.TextPrimary
 import com.example.algorithms.ui.theme.TextSecondary
 import com.example.algorithms.viewmodels.menu.MenuViewModel
+import com.example.algorithms.utils.TokenManager
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
+import org.koin.androidx.compose.koinViewModel
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlgorithmsMenuScreen(navController: NavHostController) {
     val viewModel: MenuViewModel = viewModel()
+    val progressViewModel: ProgressViewModel = koinViewModel()
+    val context = LocalContext.current
 
     var searchText by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val token = TokenManager.getToken(context)
+        token?.let {
+            progressViewModel.loadProgress(it)
+        }
+    }
+
+    val progress by progressViewModel.progress.collectAsState()
+    val algorithmProgress = remember(progress) {
+        progress.associate { it.algorithm to it.completed }
+    }
 
     val filteredItems = algorithmCategories.flatMap { it.items }
         .filter { item -> item.title.contains(searchText, ignoreCase = true) }
@@ -229,36 +258,6 @@ fun AlgorithmsMenuScreen(navController: NavHostController) {
         }
     }
 }
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = { Text("Поиск...") },
-        leadingIcon = {
-            Icon(Icons.Default.Search, contentDescription = "Поиск")
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = Color.Transparent,
-
-
-
-        ),
-        shape = RoundedCornerShape(16.dp),
-        singleLine = true,
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .fillMaxWidth()
-            .height(48.dp)
-    )
-}
-
 
 @Composable
 fun CategoryWithSubItems(
@@ -270,9 +269,45 @@ fun CategoryWithSubItems(
     val isExpanded = expandedCategoriesState[category.title] ?: false
     val rotation by animateFloatAsState(
         targetValue = if (isExpanded) 90f else 0f,
-        animationSpec = tween(300),
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
         label = ""
     )
+
+    val categoryGradient = when (category.title) {
+        "Сортировка" -> Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF2196F3),
+                Color(0xFF1976D2)
+            )
+        )
+        "Математика" -> Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF4CAF50),
+                Color(0xFF388E3C)
+            )
+        )
+        "Поиск" -> Brush.linearGradient(
+            colors = listOf(
+                Color(0xFFFF9800),
+                Color(0xFFF57C00)
+            )
+        )
+        "Графы" -> Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF9C27B0),
+                Color(0xFF7B1FA2)
+            )
+        )
+        else -> Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF757575),
+                Color(0xFF616161)
+            )
+        )
+    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Card(
@@ -280,19 +315,14 @@ fun CategoryWithSubItems(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .clickable { viewModel.toggleCategory(category.title) },
-            colors = CardDefaults.cardColors(
-                containerColor = when (category.title) {
-                    "Сортировка" -> PrimaryBlue
-                    "Математика" -> SoftGreen
-                    "Поиск" -> PastelPurple
-                    "Графы" -> SoftOrange
-                    else -> TextSecondary
-                }
-            )
+            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(categoryGradient)
+                    .clip(RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
                 Row(
@@ -304,29 +334,29 @@ fun CategoryWithSubItems(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
-                            painter = painterResource(
-                                id = when (category.title) {
-                                    "Сортировка" -> R.drawable.ic_sort
-                                    "Математика" -> R.drawable.ic_math
-                                    "Поиск" -> R.drawable.ic_search
-                                    "Графы" -> R.drawable.ic_graph
-                                    else -> R.drawable.ic_info_button
-                                }
-                            ),
+                        Icon(
+                            imageVector = when (category.title) {
+                                "Сортировка" -> Icons.Default.Sort
+                                "Математика" -> Icons.Default.Calculate
+                                "Поиск" -> Icons.Default.Search
+                                "Графы" -> Icons.Default.AccountTree
+                                else -> Icons.Default.Info
+                            },
                             contentDescription = category.title,
-                            modifier = Modifier.size(24.dp)
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
                         )
                         Text(
                             text = category.title,
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "Развернуть",
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                        tint = Color.White,
                         modifier = Modifier.rotate(rotation)
                     )
                 }
@@ -353,78 +383,147 @@ fun SubItem(
     navController: NavHostController,
     viewModel: MenuViewModel
 ) {
-
-    val gradientColors = listOf(
-        Color(0xFF1B679A),
-        Color(0xFF479BBC)
+    val progressViewModel: ProgressViewModel = koinViewModel()
+    val progress by progressViewModel.progress.collectAsState()
+    val algorithmKey = getAlgorithmKey(item.title)
+    val isCompleted = progress.any { it.algorithm == algorithmKey && it.completed }
+    
+    Log.d("AlgorithmProgress", "Checking progress for: ${item.title}")
+    Log.d("AlgorithmProgress", "Algorithm key: $algorithmKey")
+    Log.d("AlgorithmProgress", "Is completed: $isCompleted")
+    Log.d("AlgorithmProgress", "Available progress: $progress")
+    
+    val scale by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = ""
     )
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(horizontal = 24.dp, vertical = 4.dp)
+            .scale(scale)
             .clickable {
-                viewModel.clickItem(item.title)
                 navController.navigate(AppRoutes.algorithmSelectionRoute(item.title))
             },
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = RoundedCornerShape(16.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF8F9FA)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = Color(0xFFE0E0E0)
+        )
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Brush.verticalGradient(gradientColors))
-                .padding(12.dp)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = when (item.title) {
+                                "Факториал", "Числа Фибоначчи" -> Color(0xFFE8F5E9)
+                                "Бинарный поиск", "Линейный поиск" -> Color(0xFFFFF3E0)
+                                "Сортировка пузырьком", "Сортировка вставками", 
+                                "Сортировка выбором", "Быстрая сортировка" -> Color(0xFFE3F2FD)
+                                "Обход в ширину", "Обход в глубину",
+                                "Алгоритм Дейкстры", "Алгоритм Крускала" -> Color(0xFFF3E5F5)
+                                else -> Color(0xFFF5F5F5)
+                            },
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = null,
-                        tint = Color.Yellow,
+                        imageVector = when (item.title) {
+                            "Факториал" -> Icons.Default.Calculate
+                            "Фибоначчи" -> Icons.Default.Timeline
+                            "Бинарный поиск" -> Icons.Default.Search
+                            "Линейный поиск" -> Icons.Default.LinearScale
+                            "Сортировка пузырьком" -> Icons.Default.BubbleChart
+                            "Сортировка вставками" -> Icons.Default.Sort
+                            "Сортировка выбором" -> Icons.Default.SelectAll
+                            "Сортировка слиянием" -> Icons.Default.Merge
+                            "Быстрая сортировка" -> Icons.Default.Speed
+                            "Обход в ширину" -> Icons.Default.Expand
+                            "Обход в глубину" -> Icons.Default.CallSplit
+                            "Алгоритм Дейкстры" -> Icons.Default.Route
+                            "Алгоритм Крускала" -> Icons.Default.AccountTree
+                            else -> Icons.Default.Code
+                        },
+                        contentDescription = item.title,
+                        tint = when (item.title) {
+                            "Факториал", "Числа Фибоначчи" -> Color(0xFF2E7D32)
+                            "Бинарный поиск", "Линейный поиск" -> Color(0xFFE65100)
+                            "Сортировка пузырьком", "Сортировка вставками", 
+                            "Сортировка выбором", "Быстрая сортировка" -> Color(0xFF1565C0)
+                            "Обход в ширину", "Обход в глубину",
+                            "Алгоритм Дейкстры", "Алгоритм Крускала" -> Color(0xFF7B1FA2)
+                            else -> Color(0xFF424242)
+                        },
                         modifier = Modifier.size(24.dp)
                     )
-                    Column {
-                        Text(
-                            text = item.title,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            repeat(3) { index ->
-                                Icon(
-                                    imageVector = Icons.Default.Star,
-                                    contentDescription = null,
-                                    tint = if (index < item.starRating) Color(0xFFFFD700) else Color.Gray,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                        }
-                    }
                 }
-
-
-                if (item.isCompleted) {
+                Column {
+                    Text(
+                        text = item.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFF212121)
+                    )
+                    Text(
+                        text = item.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF757575)
+                    )
+                }
+            }
+            if (isCompleted) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(
+                            color = Color(0xFF4CAF50),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Пройдено",
-                        tint = Color.Green,
-                        modifier = Modifier.size(24.dp)
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Завершено",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
         }
+    }
+}
+
+private fun getAlgorithmKey(title: String): String {
+    return when (title) {
+        "Факториал" -> "factorial"
+        "Числа Фибоначчи" -> "fibonacci"
+        "Бинарный поиск" -> "binary_search"
+        "Линейный поиск" -> "linear_search"
+        "Обход в глубину" -> "dfs_search"
+        "Обход в ширину" -> "bfs_search"
+        "Сортировка пузырьком" -> "bubble_sort"
+        "Сортировка выбором" -> "selection_sort"
+        "Сортировка вставками" -> "insertion_sort"
+        "Быстрая сортировка" -> "quick_sort"
+        else -> title.lowercase().replace(" ", "_")
     }
 }

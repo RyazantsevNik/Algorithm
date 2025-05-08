@@ -10,8 +10,8 @@ import com.example.algorithms.screens.sorting.simulation.bubble_sorting.BubbleSo
 import com.example.algorithms.screens.sorting.learning.selection_sorting.SelectionSortingLearning
 import com.example.algorithms.screens.sorting.simulation.insertion_sorting.InsertionSortingSimulation
 import com.example.algorithms.screens.sorting.simulation.selection_sorting.SelectionSortingSimulation
-import com.example.algorithms.screens.sorting.learning.quick_sorting.QuickSortingLearning
-
+import com.example.algorithms.utils.TokenManager
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun BubbleSortingVisualizationScreen(navController: NavHostController) {
@@ -35,11 +35,14 @@ fun BubbleSortingLearningScreen(navController: NavHostController) {
 
 @Composable
 fun SortingSelectionLearningScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val token = TokenManager.getToken(context) ?: ""
+    
     AlgorithmScreen(
         title = "Сортировка выбором",
         navController = navController
     ) {
-        SelectionSortingLearning()
+        SelectionSortingLearning(userToken = token)
     }
 }
 
@@ -55,11 +58,14 @@ fun SelectionSortingVisualizationScreen(navController: NavHostController) {
 
 @Composable
 fun InsertionSortingLearningScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val token = TokenManager.getToken(context) ?: ""
+    
     AlgorithmScreen(
         title = "Сортировка вставками",
         navController = navController
     ) {
-        InsertionSortingLearning()
+        InsertionSortingLearning(userToken = token)
     }
 }
 
@@ -75,11 +81,14 @@ fun InsertionSortingVisualizationScreen(navController: NavHostController) {
 
 @Composable
 fun QuickSortingLearningScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val token = TokenManager.getToken(context) ?: ""
+    
     AlgorithmScreen(
         title = "Быстрая сортировка",
         navController = navController
     ) {
-        QuickSortingLearning()
+        QuickSortingLearning(userToken = token)
     }
 }
 

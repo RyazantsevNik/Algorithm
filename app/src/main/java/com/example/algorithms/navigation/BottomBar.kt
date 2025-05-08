@@ -1,18 +1,28 @@
 package com.example.algorithms.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -46,8 +56,7 @@ fun BottomBar(navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .shadow(8.dp)
-            .height(65.dp)
-            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
+            .height(65.dp),
         containerColor = Color.White,
         tonalElevation = 8.dp
     ) {
@@ -62,7 +71,7 @@ fun BottomBar(navController: NavHostController) {
             },
             label = { NavigationItemText(text = "Главная", isSelected = currentRoute == AppRoutes.HOME) },
             selected = currentRoute == AppRoutes.HOME,
-            onClick = { 
+            onClick = {
                 navController.navigate(AppRoutes.HOME) {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
@@ -79,14 +88,14 @@ fun BottomBar(navController: NavHostController) {
         NavigationBarItem(
             icon = {
                 NavigationItemIcon(
-                    icon = Icons.Default.Add,
+                    icon = Icons.Default.Search,
                     isSelected = currentRoute == AppRoutes.ALGORITHMS,
                     contentDescription = "Алгоритмы"
                 )
             },
             label = { NavigationItemText(text = "Алгоритмы", isSelected = currentRoute == AppRoutes.ALGORITHMS) },
             selected = currentRoute == AppRoutes.ALGORITHMS,
-            onClick = { 
+            onClick = {
                 navController.navigate(AppRoutes.ALGORITHMS) {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
@@ -103,15 +112,14 @@ fun BottomBar(navController: NavHostController) {
         NavigationBarItem(
             icon = {
                 NavigationItemIcon(
-                    icon = Icons.Default.Create,
+                    icon = Icons.Default.Chat,
                     isSelected = currentRoute == AppRoutes.AI_CHAT,
-                    contentDescription = "AI Чат",
-                    showBadge = true
+                    contentDescription = "AI Чат"
                 )
             },
-            label = { NavigationItemText(text = "AI Чат", isSelected = currentRoute == AppRoutes.AI_CHAT) },
+            label = { NavigationItemText(text = "Чат", isSelected = currentRoute == AppRoutes.AI_CHAT) },
             selected = currentRoute == AppRoutes.AI_CHAT,
-            onClick = { 
+            onClick = {
                 navController.navigate(AppRoutes.AI_CHAT) {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
@@ -135,7 +143,7 @@ fun BottomBar(navController: NavHostController) {
             },
             label = { NavigationItemText(text = "Профиль", isSelected = currentRoute == AppRoutes.PROFILE) },
             selected = currentRoute == AppRoutes.PROFILE,
-            onClick = { 
+            onClick = {
                 navController.navigate(AppRoutes.PROFILE) {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
@@ -161,7 +169,7 @@ private fun NavigationItemIcon(
         modifier = Modifier
             .size(if (isSelected) 32.dp else 24.dp)
             .background(
-                color = if (isSelected) LightBlue.copy(alpha = 0.2f) else Color.Transparent,
+                color = Color.Transparent,   //if (isSelected) LightBlue.copy(alpha = 0.2f) else
                 shape = CircleShape
             )
             .padding(if (isSelected) 6.dp else 0.dp),

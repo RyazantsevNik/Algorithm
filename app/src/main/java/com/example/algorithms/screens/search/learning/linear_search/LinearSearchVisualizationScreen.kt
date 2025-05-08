@@ -8,6 +8,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -224,15 +225,21 @@ fun LinearSearchVisualizer(
 
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(8.dp))
+                            .size(36.dp)
+                            .clip(RoundedCornerShape(6.dp))
                             .background(
                                 when {
                                     index == currentIndex && value == target -> Color(0xFF66BB6A)
                                     index == currentIndex -> Color(0xFFFFEB3B)
                                     else -> Color(0xFFE0E0E0)
                                 }
-                            ),
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = Color.Gray,
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
                         Text(

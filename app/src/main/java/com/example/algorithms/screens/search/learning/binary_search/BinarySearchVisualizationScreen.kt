@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -98,7 +99,7 @@ fun StepCard(stepIndex: Int, explanation: String) {
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp)) {
             Text(
                 text = "Шаг $stepIndex",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -107,7 +108,7 @@ fun StepCard(stepIndex: Int, explanation: String) {
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 2.dp),
                 thickness = 1.dp,
                 color = Color(0xFF0D47A1)
             )
@@ -312,8 +313,8 @@ fun BinarySearchVisualizer(
 
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(8.dp))
+                            .size(36.dp)
+                            .clip(RoundedCornerShape(6.dp))
                             .background(
                                 when {
                                     value == target && currentStep is BinarySearchViewModel.SearchStep.Found -> Color(0xFF66BB6A)
@@ -321,7 +322,14 @@ fun BinarySearchVisualizer(
                                     isDisabled -> Color(0xFF9E9E9E)
                                     else -> Color(0xFFE0E0E0)
                                 }
-                            ),
+
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = Color.Gray,
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
                         Text(

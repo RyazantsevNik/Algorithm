@@ -11,7 +11,11 @@ import com.example.algorithms.viewmodels.step_sorting.QuickSortStepViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun QuickSortingLearning(viewModel: QuickSortStepViewModel = getViewModel()) {
+fun QuickSortingLearning(
+    viewModel: QuickSortStepViewModel = getViewModel(),
+    userToken: String
+) {
+    viewModel.setToken(userToken)
     var showIntro by remember { mutableStateOf(true) }
     
     if (showIntro) {

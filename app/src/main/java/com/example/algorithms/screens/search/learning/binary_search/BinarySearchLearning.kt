@@ -28,12 +28,18 @@ import androidx.navigation.NavHostController
 import com.example.algorithms.R
 import com.example.algorithms.screens.sorting.learning.IntroScreen
 import com.example.algorithms.viewmodels.step_search.BinarySearchViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BinarySearchLearning(navController: NavHostController) {
+fun BinarySearchLearning(
+    navController: NavHostController,
+    userToken: String
+) {
     var showIntro by remember { mutableStateOf(true) }
+    val viewModel: BinarySearchViewModel = viewModel()
+    viewModel.setToken(userToken)
 
     Scaffold(
         topBar = {

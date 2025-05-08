@@ -1,15 +1,19 @@
 package com.example.algorithms.viewmodels.step_graphs
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
 data class GraphNode(
@@ -26,8 +30,14 @@ data class StateSnapshot(
 )
 
 
-class DfsSearchViewModel : ViewModel() {
+class DfsSearchViewModel : ViewModel(), KoinComponent {
+    private val progressViewModel: ProgressViewModel by inject()
+    private var isCompleted = false
+    private var userToken: String? = null
 
+    fun setToken(token: String) {
+        userToken = token
+    }
 
     private val graph = listOf(
         GraphNode("a", listOf("b", "c", "d")),
@@ -137,6 +147,18 @@ class DfsSearchViewModel : ViewModel() {
             _current.value = null
             _candidates.clear()
             _explanation.value = "Обход завершён."
+            
+            if (!isCompleted) {
+                isCompleted = true
+                userToken?.let { token ->
+                    Log.d("DfsSearch", "Saving progress for dfs_search")
+                    progressViewModel.updateProgress(
+                        token = token,
+                        algorithm = "dfs_search",
+                        completed = true
+                    )
+                }
+            }
             return
         }
 

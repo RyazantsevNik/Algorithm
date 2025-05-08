@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,10 +15,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.algorithms.screens.auth.AuthScreen
 import com.example.algorithms.screens.chat.ChatScreen
-import com.example.algorithms.screens.graphs.BfsSearchScreen
-import com.example.algorithms.screens.graphs.DfsSearchScreen
+import com.example.algorithms.screens.graphs.learning.BfsSearchScreen
+import com.example.algorithms.screens.graphs.learning.DfsSearchScreen
 import com.example.algorithms.screens.graphs.simulation.BfsGraphSimulationScreen
 import com.example.algorithms.screens.graphs.simulation.DfsGraphSimulationScreen
+import com.example.algorithms.screens.math.FactorialLearning
+import com.example.algorithms.screens.math.FibonacciLearning
 import com.example.algorithms.screens.selection.AlgorithmSelectionScreen
 import com.example.algorithms.screens.menu.AlgorithmsMenuScreen
 import com.example.algorithms.screens.menu.HomeScreen
@@ -35,10 +39,13 @@ import com.example.algorithms.screens.sorting.InsertionSortingVisualizationScree
 import com.example.algorithms.screens.sorting.QuickSortingLearningScreen
 import com.example.algorithms.screens.sorting.SelectionSortingVisualizationScreen
 import com.example.algorithms.screens.sorting.SortingSelectionLearningScreen
+import com.example.algorithms.utils.TokenManager
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val userToken = TokenManager.getToken(context) ?: ""
 
     Scaffold(
         bottomBar = { BottomBar(navController) }
@@ -82,7 +89,6 @@ fun AppNavigation() {
                 HelpScreen(navController = navController)
             }
 
-            // Экран выбора теории/практики
             composable(
                 route = AppRoutes.ALGORITHM_SELECTION,
                 arguments = listOf(navArgument("algorithmTitle") { type = NavType.StringType })
@@ -112,11 +118,13 @@ fun AppNavigation() {
                     "Сортировка выбором" -> SortingSelectionLearningScreen(navController)
                     "Сортировка вставками" -> InsertionSortingLearningScreen(navController)
                     "Быстрая сортировка" -> QuickSortingLearningScreen(navController)
-                    "Линейный поиск" -> LinearSearchLearning(navController)
-                    "Бинарный поиск" -> BinarySearchLearning(navController)
-                    "Обход в глубину" -> DfsSearchScreen(navController)
-                    "Обход в ширину" -> BfsSearchScreen(navController)
-                    // TODO Добавьте другие теории алгоритмов здесь
+                    "Линейный поиск" -> LinearSearchLearning(navController, userToken)
+                    "Бинарный поиск" -> BinarySearchLearning(navController, userToken)
+                    "Обход в глубину" -> DfsSearchScreen(navController, userToken)
+                    "Обход в ширину" -> BfsSearchScreen(navController, userToken)
+                    "Факториал" -> FactorialLearning(navController, userToken)
+                    "Числа Фибоначчи" -> FibonacciLearning(navController, userToken)
+                    // TODO другие теории алгоритмов здесь
 
                     else -> TheoryScreen(navController, algorithmTitle)
                 }
@@ -137,7 +145,7 @@ fun AppNavigation() {
                     "Бинарный поиск" -> BinarySearchSimulationScreen(navController)
                     "Обход в ширину" -> BfsGraphSimulationScreen(navController)
                     "Обход в глубину" -> DfsGraphSimulationScreen(navController)
-                    // TODO Добавьте другие практики алгоритмов здесь
+                    // TODO другие практики алгоритмов здесь
 
                     else -> PracticeScreen(navController, algorithmTitle)
                 }

@@ -1,4 +1,4 @@
-package com.example.algorithms.screens.graphs
+package com.example.algorithms.screens.graphs.learning
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +33,9 @@ import com.example.algorithms.screens.search.learning.binary_search.StepCard
 import com.example.algorithms.viewmodels.step_graphs.DfsSearchViewModel
 
 @Composable
-fun DfsSearchScreen(navController: NavHostController) {
+fun DfsSearchScreen(navController: NavHostController, userToken: String) {
     val viewModel: DfsSearchViewModel = viewModel()
+    viewModel.setToken(userToken)
     val current = viewModel.current.value
     val visited = viewModel.visited
     val remainingCandidates = viewModel.remainingCandidates

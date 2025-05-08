@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,6 +39,7 @@ fun DfsGraphSimulationScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 4.dp, start = 12.dp, end = 12.dp)
+                .verticalScroll(rememberScrollState())
         ) {
 
             Row(

@@ -39,4 +39,8 @@ abstract class BaseSortStepViewModel : ViewModel() {
             currentStepIndex++
         }
     }
+
+    open fun handleNextStep() {
+        goToNextStep()
+    }
 }

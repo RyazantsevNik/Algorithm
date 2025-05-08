@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.SupportAgent
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -119,350 +120,15 @@ import com.example.algorithms.utils.AuthState
 import com.example.algorithms.utils.TokenManager
 import com.example.algorithms.viewmodels.profile.AuthViewModel
 import com.example.algorithms.viewmodels.profile.ProfileViewModel
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import org.koin.androidx.compose.koinViewModel
 
-//@Composable
-//fun ProfileScreen(
-//    viewModel: ProfileViewModel = koinViewModel(),
-//    authViewModel: AuthViewModel = koinViewModel(),
-//    navController: NavController
-//) {
-//    var expanded by remember { mutableStateOf(false) }
-//    val profileState by viewModel.profileState.collectAsState()
-//    val isAuthenticated by AuthState.isAuthenticated.collectAsState()
-//    var showEditDialog by remember { mutableStateOf(false) }
-//    var showImagePicker by remember { mutableStateOf(false) }
-//    val context = LocalContext.current
-//    val launcher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.GetContent()
-//    ) { uri: Uri? -> uri?.let { viewModel.updateProfilePicture(it) } }
-//
-//    var menuOffset by remember { mutableStateOf(DpOffset.Zero) }
-//
-//    LaunchedEffect(Unit) {
-//        val token = TokenManager.getToken(context)
-//        if (token != null) {
-//            viewModel.loadProfile()
-//        } else {
-//            AuthState.setAuthenticated(false)
-//        }
-//    }
-//
-//    val density = LocalDensity.current.density
-//
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(
-//                brush = Brush.verticalGradient(
-//                    colors = listOf(BackgroundTop, BackgroundBottom)
-//                )
-//            )
-//    ) {
-//        if (isAuthenticated) {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(start = 16.dp, top = 62.dp, end = 16.dp, bottom = 16.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Box(
-//                    modifier = Modifier
-//                        .size(120.dp)
-//                        .clip(CircleShape)
-//                        .background(SoftBlue)
-//                        .clickable { expanded = true }
-//                        .onGloballyPositioned { layoutCoordinates ->
-//                            val photoBoxBounds = layoutCoordinates.boundsInRoot()
-//                            menuOffset = DpOffset(
-//                                x = (photoBoxBounds.left / density).dp,
-//                                y = (photoBoxBounds.bottom / density).dp
-//                            )
-//                        },
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    profileState?.profilePicture?.let { url ->
-//                        AsyncImage(
-//                            model = ImageRequest.Builder(LocalContext.current)
-//                                .data("http://5.35.126.14:8000${url}")
-//                                .crossfade(true)
-//                                .build(),
-//                            contentDescription = "Фото профиля",
-//                            modifier = Modifier.fillMaxSize(),
-//                            contentScale = ContentScale.Crop
-//                        )
-//                    } ?: Icon(
-//                        imageVector = Icons.Default.Person,
-//                        contentDescription = null,
-//                        modifier = Modifier.size(60.dp),
-//                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-//                    )
-//
-//                    Icon(
-//                        imageVector = Icons.Default.Edit,
-//                        contentDescription = "Редактировать фото",
-//                        modifier = Modifier
-//                            .size(24.dp)
-//                            .align(Alignment.BottomEnd)
-//                            .offset(x = (-12).dp, y = (-8).dp)
-//                            .clickable { expanded = true }
-//                            .background(Color.White, CircleShape)
-//                            .padding(4.dp),
-//                        tint = Color.Black
-//                    )
-//                }
-//
-//
-//                DropdownMenu(
-//                    expanded = expanded,
-//                    onDismissRequest = { expanded = false },
-//                    offset = menuOffset.copy(
-//
-//                        x = menuOffset.x - 20.dp,
-//                        y = if (profileState?.profilePicture != null) {
-//                            menuOffset.y + 52.dp
-//                        } else {
-//                            menuOffset.y + 10.dp
-//                        }
-//                    )
-//                ) {
-//
-//                    DropdownMenuItem(
-//                        text = { Text("Изменить фото") },
-//                        onClick = {
-//
-//                            showImagePicker = true
-//                            expanded = false
-//                        }
-//                    )
-//
-//
-//                    if (profileState?.profilePicture != null) {
-//                        DropdownMenuItem(
-//                            text = { Text("Удалить фото") },
-//                            onClick = {
-//                                viewModel.deleteProfilePhoto()
-//                                expanded = false
-//                            }
-//                        )
-//                    }
-//                }
-//
-//
-//
-//
-//
-//                Text(
-//                    text = profileState?.username ?: "",
-//                    style = MaterialTheme.typography.titleLarge,
-//                    color = Color.Black,
-//                    modifier = Modifier.padding(top = 20.dp, bottom = 46.dp)
-//                )
-//
-//
-//                val x = 0.7F
-//                LearningProgress(x)
-//
-//
-//                Spacer(modifier = Modifier.weight(1f))
-//
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(bottom = 24.dp),
-//                    verticalArrangement = Arrangement.spacedBy(12.dp)
-//                ) {
-//                    Button(
-//                        onClick = { showEditDialog = true },
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(56.dp),
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = PrimaryBlue
-//                        ),
-//                        shape = RoundedCornerShape(12.dp)
-//                    ) {
-//                        Icon(
-//                            Icons.Default.Edit,
-//                            contentDescription = null,
-//                            modifier = Modifier.padding(end = 8.dp)
-//                        )
-//                        Text(
-//                            "Редактировать профиль",
-//                            style = MaterialTheme.typography.bodyLarge
-//                        )
-//                    }
-//
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-//                    ) {
-//                        OutlinedButton(
-//                            onClick = {
-//                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RyazantsevNik/Algorithm.git"))
-//
-//                                context.startActivity(intent)
-//                            },
-//                            modifier = Modifier
-//                                .weight(1f)
-//                                .height(56.dp),
-//                            colors = ButtonDefaults.outlinedButtonColors(
-//                                contentColor = PrimaryBlue
-//                            ),
-//                            border = BorderStroke(1.dp, PrimaryBlue),
-//                            shape = RoundedCornerShape(12.dp)
-//                        ) {
-//                            Icon(
-//                                Icons.Default.Code,
-//                                contentDescription = null,
-//                                modifier = Modifier.padding(end = 8.dp)
-//                            )
-//                            Text(
-//                                "GitHub",
-//                                style = MaterialTheme.typography.bodyLarge
-//                            )
-//                        }
-//
-//                        OutlinedButton(
-//                            onClick = { navController.navigate("help_screen") },
-//                            modifier = Modifier
-//                                .weight(1f)
-//                                .height(56.dp),
-//                            colors = ButtonDefaults.outlinedButtonColors(
-//                                contentColor = PrimaryBlue
-//                            ),
-//                            border = BorderStroke(1.dp, PrimaryBlue),
-//                            shape = RoundedCornerShape(12.dp)
-//                        ) {
-//                            Icon(
-//                                Icons.Default.Info,
-//                                contentDescription = null,
-//                                modifier = Modifier.padding(end = 8.dp)
-//                            )
-//                            Text(
-//                                "Справка",
-//                                style = MaterialTheme.typography.bodyLarge
-//                            )
-//                        }
-//                    }
-//
-//                    Button(
-//                        onClick = {
-//                            authViewModel.logout {
-//                                navController.navigate("auth") {
-//                                    popUpTo("main") { inclusive = true }
-//                                }
-//                            }
-//                        },
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(56.dp),
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = SoftOrange
-//                        ),
-//                        shape = RoundedCornerShape(12.dp)
-//                    ) {
-//                        Icon(
-//                            Icons.AutoMirrored.Filled.ExitToApp,
-//                            contentDescription = null,
-//                            modifier = Modifier.padding(end = 8.dp)
-//                        )
-//                        Text(
-//                            "Выйти",
-//                            style = MaterialTheme.typography.bodyLarge
-//                        )
-//                    }
-//                }
-//            }
-//        } else {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(horizontal = 24.dp, vertical = 32.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                verticalArrangement = Arrangement.Center
-//            ) {
-//
-//                Icon(
-//                    imageVector = Icons.Filled.AccountCircle,
-//                    contentDescription = "Иконка профиля",
-//                    modifier = Modifier
-//                        .size(120.dp)
-//                        .padding(bottom = 24.dp),
-//                    tint = DarkBlue
-//                )
-//
-//
-//                Text(
-//                    text = "Войдите в аккаунт",
-//                    style = MaterialTheme.typography.headlineLarge,
-//                    color = MaterialTheme.colorScheme.onSurface,
-//                    modifier = Modifier.padding(bottom = 16.dp)
-//                )
-//
-//
-//                Text(
-//                    text = "Чтобы получить доступ к профилю, чату с AI и отслеживать свой прогресс",
-//                    style = MaterialTheme.typography.bodyLarge,
-//                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    textAlign = TextAlign.Center,
-//                    lineHeight = 24.sp,
-//                    modifier = Modifier.padding(bottom = 40.dp)
-//                )
-//
-//
-//                Button(
-//                    onClick = { navController.navigate(AppRoutes.AUTH_SCREEN) },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(56.dp),
-//                    shape = MaterialTheme.shapes.medium,
-//                    elevation = ButtonDefaults.buttonElevation(
-//                        defaultElevation = 2.dp,
-//                        pressedElevation = 4.dp
-//                    ),
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = DarkBlue,
-//                        contentColor = Color.White
-//                    )
-//                ) {
-//                    Text(
-//                        text = "Войти в аккаунт",
-//                        style = MaterialTheme.typography.labelLarge
-//                    )
-//                }
-//            }
-//        }
-//    }
-//
-//    if (showEditDialog) {
-//        EditProfileDialog(
-//            user = profileState!!,
-//            onDismiss = { showEditDialog = false },
-//            onSave = { updatedProfile ->
-//                viewModel.updateProfile(
-//                    UserUpdateRequest(
-//                        username = updatedProfile.username,
-//                        email = updatedProfile.email,
-//                        currentPassword = updatedProfile.currentPassword,
-//                        newPassword = updatedProfile.newPassword
-//                    )
-//                )
-//                showEditDialog = false
-//            }
-//        )
-//    }
-//
-//    if (showImagePicker) {
-//        launcher.launch("image/*")
-//        showImagePicker = false
-//    }
-//}
 
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = koinViewModel(),
     authViewModel: AuthViewModel = koinViewModel(),
+    progressViewModel: ProgressViewModel = koinViewModel(),
     navController: NavController
 ) {
     val profileState by viewModel.profileState.collectAsState()
@@ -470,6 +136,7 @@ fun ProfileScreen(
     var showEditDialog by remember { mutableStateOf(false) }
     var showImagePicker by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
+    var showResetProgressDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     var menuOffset by remember { mutableStateOf(DpOffset.Zero) }
@@ -483,6 +150,7 @@ fun ProfileScreen(
         val token = TokenManager.getToken(context)
         if (token != null) {
             viewModel.loadProfile()
+            progressViewModel.loadProgress(token)
         } else {
             AuthState.setAuthenticated(false)
         }
@@ -490,7 +158,7 @@ fun ProfileScreen(
 
     if (isAuthenticated) {
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
 
             Box(
                 modifier = Modifier
@@ -638,7 +306,7 @@ fun ProfileScreen(
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
-                        LearningProgress(0.7f)
+                        LearningProgress(progressViewModel)
                     }
                 }
 
@@ -651,6 +319,13 @@ fun ProfileScreen(
                         icon = Icons.Default.Edit,
                         title = "Редактировать профиль",
                         onClick = { showEditDialog = true }
+                    )
+
+                    ProfileMenuItem(
+                        icon = Icons.Default.Delete,
+                        title = "Сбросить прогресс",
+                        iconTint = ErrorRed,
+                        onClick = { showResetProgressDialog = true }
                     )
 
                     ProfileMenuItem(
@@ -767,6 +442,35 @@ fun ProfileScreen(
     if (showImagePicker) {
         launcher.launch("image/*")
         showImagePicker = false
+    }
+
+    if (showResetProgressDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetProgressDialog = false },
+            title = { Text("Сбросить прогресс") },
+            text = { Text("Вы уверены, что хотите сбросить весь прогресс обучения? Это действие нельзя отменить.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val token = TokenManager.getToken(context)
+                        token?.let { progressViewModel.resetProgress(it) }
+                        showResetProgressDialog = false
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = ErrorRed
+                    )
+                ) {
+                    Text("Сбросить")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showResetProgressDialog = false }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
     }
 }
 
@@ -994,12 +698,29 @@ fun EditProfileDialog(
 }
 
 @Composable
-fun LearningProgress(progress: Float) {
+fun LearningProgress(
+    progressViewModel: ProgressViewModel = koinViewModel()
+) {
+    val progress by progressViewModel.progress.collectAsState()
+    val isLoading by progressViewModel.isLoading.collectAsState()
+    
+    // Фиксированное количество алгоритмов
+    val totalAlgorithms = 10
+    
+    // Вычисляем прогресс как процент завершенных алгоритмов
+    val totalProgress = if (progress.isNotEmpty()) {
+        val completedCount = progress.count { it.completed }
+        Log.d("LearningProgress", "Completed: $completedCount, Total: $totalAlgorithms")
+        completedCount.toFloat() / totalAlgorithms
+    } else {
+        0f
+    }
+    
     val animatedProgress = remember { Animatable(0f) }
 
-    LaunchedEffect(progress) {
+    LaunchedEffect(totalProgress) {
         animatedProgress.animateTo(
-            targetValue = progress,
+            targetValue = totalProgress,
             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
         )
     }
@@ -1032,15 +753,27 @@ fun LearningProgress(progress: Float) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = "Прогресс обучения: ${(progress * 100).toInt()}%",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            ),
-            color = Color(0xFF007AFF),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        if (isLoading) {
+            Text(
+                text = "Загрузка прогресса...",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                ),
+                color = Color(0xFF007AFF),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            Text(
+                text = "Прогресс обучения: ${(totalProgress * 100).toInt()}%",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                ),
+                color = Color(0xFF007AFF),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        }
     }
 }
 

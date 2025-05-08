@@ -5,10 +5,12 @@ import com.example.algorithms.di.main_api.ApiClient
 import com.example.algorithms.di.main_api.AuthApi
 import com.example.algorithms.di.main_api.ProfileApi
 import com.example.algorithms.di.main_api.ProgressApi
+import com.example.algorithms.di.main_api.ProgressRepository
 import com.example.algorithms.viewmodels.chat.ChatViewModel
 import com.example.algorithms.viewmodels.menu.MenuViewModel
 import com.example.algorithms.viewmodels.profile.AuthViewModel
 import com.example.algorithms.viewmodels.profile.ProfileViewModel
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import com.example.algorithms.viewmodels.simulation_graphs.BfsGraphSimulationViewModel
 import com.example.algorithms.viewmodels.simulation_graphs.DfsGraphSimulationViewModel
 import com.example.algorithms.viewmodels.simulation_search.LinearSearchSimulationViewModel
@@ -17,6 +19,8 @@ import com.example.algorithms.viewmodels.simulation_sorting.InsertionSortViewMod
 import com.example.algorithms.viewmodels.simulation_sorting.SelectionSortViewModel
 import com.example.algorithms.viewmodels.step_graphs.BfsSearchViewModel
 import com.example.algorithms.viewmodels.step_graphs.DfsSearchViewModel
+import com.example.algorithms.viewmodels.step_math.FactorialStepViewModel
+import com.example.algorithms.viewmodels.step_math.FibonacciStepViewModel
 import com.example.algorithms.viewmodels.step_search.BinarySearchViewModel
 import com.example.algorithms.viewmodels.step_search.LinearSearchViewModel
 import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
@@ -32,6 +36,7 @@ val appModule = module {
     single { ApiClient.retrofit.create(ProfileApi::class.java) }
     single { ApiClient.retrofit.create(ProgressApi::class.java) }
     single { ApiClient.retrofit.create(ChatApi::class.java) }  //chat
+    single { ProgressRepository(get()) }
 
     // ViewModels
     viewModel { AuthViewModel(get(), get(), get()) }
@@ -50,6 +55,9 @@ val appModule = module {
     viewModel { BfsSearchViewModel() }
     viewModel { BfsGraphSimulationViewModel() }
     viewModel { DfsGraphSimulationViewModel() }
+    viewModel { FactorialStepViewModel() }
+    viewModel { FibonacciStepViewModel() }
+    viewModel { ProgressViewModel(get()) }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ChatViewModel(get(), get(), get()) }              //chat
 }

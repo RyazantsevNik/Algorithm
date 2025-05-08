@@ -1,24 +1,36 @@
 package com.example.algorithms.viewmodels.step_search
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class LinearSearchViewModel : ViewModel() {
+class LinearSearchViewModel : ViewModel(), KoinComponent {
+    private val progressViewModel: ProgressViewModel by inject()
+    private var isCompleted = false
+    private var userToken: String? = null
+
+    fun setToken(token: String) {
+        userToken = token
+    }
 
     val data = listOf(5, 3, 9, 1, 4, 7)
     val target = 9
 
-    private val _stepIndex = mutableStateOf(0)
+    private val _stepIndex = mutableIntStateOf(0)
     val stepIndex: State<Int> = _stepIndex
 
-    private val _currentIndex = mutableStateOf(-1)
+    private val _currentIndex = mutableIntStateOf(-1)
     val currentIndex: State<Int> = _currentIndex
 
     private var foundIndex: Int? = null
@@ -37,8 +49,8 @@ class LinearSearchViewModel : ViewModel() {
     fun goToStart() {
         stopAuto()
         foundIndex = null
-        _stepIndex.value = 0
-        _currentIndex.value = -1
+        _stepIndex.intValue = 0
+        _currentIndex.intValue = -1
         updateExplanation()
     }
 
@@ -54,55 +66,66 @@ class LinearSearchViewModel : ViewModel() {
             }
         }
 
-        _stepIndex.value = if (foundIndex != null) {
+        _stepIndex.intValue = if (foundIndex != null) {
             foundIndex!! + 1
         } else {
             data.size + 1
         }
 
-        _currentIndex.value = foundIndex ?: -1
+        _currentIndex.intValue = foundIndex ?: -1
         updateExplanation()
     }
 
     fun goToNextStep() {
         val totalSteps = if (foundIndex != null) foundIndex!! + 2 else data.size + 2
-        if (_stepIndex.value >= totalSteps - 1) return
+        if (_stepIndex.intValue >= totalSteps - 1) return
 
-        _stepIndex.value++
+        _stepIndex.intValue++
 
-        when (_stepIndex.value) {
-            0 -> _currentIndex.value = -1
+        when (_stepIndex.intValue) {
+            0 -> _currentIndex.intValue = -1
             in 1..data.size -> {
-                val index = _stepIndex.value - 1
-                _currentIndex.value = index
+                val index = _stepIndex.intValue - 1
+                _currentIndex.intValue = index
                 if (data[index] == target && foundIndex == null) {
                     foundIndex = index
+                    if (!isCompleted) {
+                        isCompleted = true
+                        userToken?.let { token ->
+                            Log.d("LinearSearch", "Saving progress for linear_search")
+                            progressViewModel.updateProgress(
+                                token = token,
+                                algorithm = "linear_search",
+                                completed = true
+                            )
+                        }
+                    }
                 }
             }
-            foundIndex?.plus(1) -> _currentIndex.value = foundIndex!!
+            foundIndex?.plus(1) -> _currentIndex.intValue = foundIndex!!
         }
 
         updateExplanation()
     }
 
     fun goToPreviousStep() {
-        if (_stepIndex.value <= 0) return
+        if (_stepIndex.intValue <= 0) return
         stopAuto()
 
-        _stepIndex.value--
+        _stepIndex.intValue--
 
-        if (_stepIndex.value == 0) {
-            _currentIndex.value = -1
+        if (_stepIndex.intValue == 0) {
+            _currentIndex.intValue = -1
         } else {
-            val idx = _stepIndex.value - 1
-            _currentIndex.value = if (foundIndex != null && idx > foundIndex!!) {
+            val idx = _stepIndex.intValue - 1
+            _currentIndex.intValue = if (foundIndex != null && idx > foundIndex!!) {
                 foundIndex!!
             } else {
                 idx
             }
         }
 
-        if (_stepIndex.value <= (foundIndex ?: Int.MAX_VALUE)) {
+        if (_stepIndex.intValue <= (foundIndex ?: Int.MAX_VALUE)) {
             foundIndex = null
         }
 
@@ -110,7 +133,7 @@ class LinearSearchViewModel : ViewModel() {
     }
 
     private fun updateExplanation() {
-        val step = _stepIndex.value
+        val step = _stepIndex.intValue
         _explanation.value = when (step) {
             0 -> "Наша цель — найти элемент $target. Мы будем последовательно сравнивать каждый элемент массива с $target."
             in 1..data.size -> {
@@ -131,7 +154,7 @@ class LinearSearchViewModel : ViewModel() {
         isAuto = !isAuto
         if (isAuto) {
             autoJob = viewModelScope.launch {
-                while (_stepIndex.value < (foundIndex?.plus(1) ?: (data.size + 1)) && isAuto) {
+                while (_stepIndex.intValue < (foundIndex?.plus(1) ?: (data.size + 1)) && isAuto) {
                     delay(1000)
                     goToNextStep()
                 }

@@ -11,7 +11,11 @@ import com.example.algorithms.viewmodels.step_sorting.SelectionSortStepViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun SelectionSortingLearning(viewModel: SelectionSortStepViewModel = getViewModel()) {
+fun SelectionSortingLearning(
+    viewModel: SelectionSortStepViewModel = getViewModel(),
+    userToken: String
+) {
+    viewModel.setToken(userToken)
     var showIntro by remember { mutableStateOf(true) }
     if (showIntro) {
         IntroScreen(

@@ -8,11 +8,21 @@ import androidx.compose.runtime.setValue
 import com.example.algorithms.screens.sorting.learning.IntroScreen
 import com.example.algorithms.screens.sorting.learning.SortScreen
 import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
+import com.example.algorithms.utils.TokenManager
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun BubbleSortingLearning(viewModel: BubbleSortStepViewModel = getViewModel()) {
+fun BubbleSortingLearning(
+    viewModel: BubbleSortStepViewModel = getViewModel()
+) {
     var showIntro by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    val token = TokenManager.getToken(context)
+
+    // Устанавливаем токен при инициализации
+    token?.let { viewModel.setToken(it) }
 
     if (showIntro) {
         IntroScreen(

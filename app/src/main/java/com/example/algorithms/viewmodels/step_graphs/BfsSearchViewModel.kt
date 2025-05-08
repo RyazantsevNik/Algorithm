@@ -1,15 +1,19 @@
 package com.example.algorithms.viewmodels.step_graphs
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
 data class StateSnapshots(
@@ -20,7 +24,14 @@ data class StateSnapshots(
     val remainingCandidates: List<String>
 )
 
-class BfsSearchViewModel : ViewModel() {
+class BfsSearchViewModel : ViewModel(), KoinComponent {
+    private val progressViewModel: ProgressViewModel by inject()
+    private var isCompleted = false
+    private var userToken: String? = null
+
+    fun setToken(token: String) {
+        userToken = token
+    }
 
     private val graph = listOf(
         GraphNode("a", listOf("b", "c", "d")),
@@ -122,6 +133,18 @@ class BfsSearchViewModel : ViewModel() {
             _current.value = null
             _candidates.clear()
             _explanation.value = "Обход завершён."
+            
+            if (!isCompleted) {
+                isCompleted = true
+                userToken?.let { token ->
+                    Log.d("BfsSearch", "Saving progress for bfs_search")
+                    progressViewModel.updateProgress(
+                        token = token,
+                        algorithm = "bfs_search",
+                        completed = true
+                    )
+                }
+            }
             return
         }
 
@@ -205,5 +228,32 @@ class BfsSearchViewModel : ViewModel() {
     private fun stopAuto() {
         autoJob?.cancel()
         _isAutoMode.value = false
+    }
+
+    fun goToNextStep() {
+        if (_stepIndex.value >= steps.size - 1) return
+
+        _stepIndex.value++
+        val currentState = steps[_stepIndex.value]
+        _visited.clear()
+        _visited.addAll(currentState.visited)
+        _current.value = currentState.current
+        queue.clear()
+        queue.addAll(currentState.queue)
+        _remainingCandidates.clear()
+        _remainingCandidates.addAll(currentState.remainingCandidates)
+        _explanation.value = currentState.explanation
+
+        if (_stepIndex.value == steps.size - 1 && !isCompleted) {
+            isCompleted = true
+            userToken?.let { token ->
+                Log.d("BfsSearch", "Saving progress for bfs_search")
+                progressViewModel.updateProgress(
+                    token = token,
+                    algorithm = "bfs_search",
+                    completed = true
+                )
+            }
+        }
     }
 }

@@ -3,12 +3,38 @@ package com.example.algorithms.viewmodels.step_sorting
 import com.example.algorithms.data.SelectionSortStep
 import com.example.algorithms.data.SortStep
 import com.example.algorithms.viewmodels.step_sorting.base_class_for_step.BaseSortStepViewModel
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class SelectionSortStepViewModel : BaseSortStepViewModel() {
-
-
+class SelectionSortStepViewModel : BaseSortStepViewModel(), KoinComponent {
+    private val progressViewModel: ProgressViewModel by inject()
     private val initialArray = listOf(5, 2, 4, 10, 6, 1, 3, 8, 7, 9)
+    private var isCompleted = false
+    private var userToken: String? = null
+
     override val steps: List<SortStep> = generateSelectionSortSteps(initialArray)
+
+    fun setToken(token: String) {
+        userToken = token
+    }
+
+    override fun handleNextStep() {
+        if (currentStepIndex < steps.size - 1) {
+            super.goToNextStep()
+            
+            if (currentStepIndex == steps.size - 1 && !isCompleted) {
+                isCompleted = true
+                userToken?.let { token ->
+                    progressViewModel.updateProgress(
+                        token = token,
+                        algorithm = "selection_sort",
+                        completed = true
+                    )
+                }
+            }
+        }
+    }
 
     private fun generateSelectionSortSteps(arr: List<Int>): List<SelectionSortStep> {
         val steps = mutableListOf<SelectionSortStep>()
