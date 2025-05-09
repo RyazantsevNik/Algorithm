@@ -26,7 +26,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -51,6 +53,8 @@ import androidx.compose.material.icons.filled.Expand
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -107,10 +111,14 @@ import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlgorithmsMenuScreen(navController: NavHostController) {
+fun AlgorithmsMenuScreen(
+    navController: NavHostController,
+    initialCategory: String? = null
+) {
     val viewModel: MenuViewModel = viewModel()
     val progressViewModel: ProgressViewModel = koinViewModel()
     val context = LocalContext.current
+    val listState = rememberLazyListState()
 
     var searchText by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
@@ -119,6 +127,15 @@ fun AlgorithmsMenuScreen(navController: NavHostController) {
         val token = TokenManager.getToken(context)
         token?.let {
             progressViewModel.loadProgress(it)
+        }
+    }
+
+    LaunchedEffect(initialCategory) {
+        if (initialCategory != null) {
+            val categoryIndex = algorithmCategories.indexOfFirst { it.title == initialCategory }
+            if (categoryIndex != -1) {
+                listState.animateScrollToItem(categoryIndex)
+            }
         }
     }
 
@@ -134,7 +151,6 @@ fun AlgorithmsMenuScreen(navController: NavHostController) {
         containerColor = Color.Transparent,
         topBar = {}
     ) { padding ->
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -203,17 +219,17 @@ fun AlgorithmsMenuScreen(navController: NavHostController) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_info_button),
                             contentDescription = "Информация",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                            ,modifier = Modifier.size(24.dp)
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
             }
-            LazyColumn {
+            LazyColumn(state = listState) {
                 item {
                     Spacer(modifier = Modifier.height(90.dp))
                 }
-                items(algorithmCategories){ category ->
+                items(algorithmCategories) { category ->
                     CategoryWithSubItems(
                         category = category,
                         navController = navController,

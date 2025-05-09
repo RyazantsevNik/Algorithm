@@ -24,6 +24,7 @@ import com.example.algorithms.screens.math.FibonacciLearning
 import com.example.algorithms.screens.selection.AlgorithmSelectionScreen
 import com.example.algorithms.screens.menu.AlgorithmsMenuScreen
 import com.example.algorithms.screens.menu.HomeScreen
+import com.example.algorithms.screens.menu.LearningMapScreen
 import com.example.algorithms.screens.profile.HelpScreen
 import com.example.algorithms.screens.profile.ProfileScreen
 import com.example.algorithms.screens.search.learning.binary_search.BinarySearchLearning
@@ -61,15 +62,21 @@ fun AppNavigation() {
                 HomeScreen(navController)
             }
 
-            composable(AppRoutes.ALGORITHMS) {
-                AlgorithmsMenuScreen(navController)
+            composable(
+                route = "${AppRoutes.ALGORITHMS}/{category}",
+                arguments = listOf(navArgument("category") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val category = backStackEntry.arguments?.getString("category")
+                AlgorithmsMenuScreen(navController, category)
             }
 
+            composable(AppRoutes.LEARNING_MAP) {
+                LearningMapScreen(navController)
+            }
 
             composable(AppRoutes.AI_CHAT) {
                 ChatScreen(navController)
             }
-
 
             composable(AppRoutes.PROFILE) {
                 ProfileScreen(navController = navController)

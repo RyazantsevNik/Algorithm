@@ -8,6 +8,7 @@ object AppRoutes {
     const val AUTH_SCREEN = "auth_screen"
     const val HELP_SCREEN = "help_screen"
     const val INFO = "info"
+    const val LEARNING_MAP = "learning_map"
 
     // Подмаршруты
     private const val ALGORITHM_SELECTION_BASE = "algorithm_selection"

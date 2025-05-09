@@ -7,6 +7,7 @@ import com.example.algorithms.di.main_api.ProfileApi
 import com.example.algorithms.di.main_api.ProgressApi
 import com.example.algorithms.di.main_api.ProgressRepository
 import com.example.algorithms.viewmodels.chat.ChatViewModel
+import com.example.algorithms.viewmodels.menu.FavoritesViewModel
 import com.example.algorithms.viewmodels.menu.MenuViewModel
 import com.example.algorithms.viewmodels.profile.AuthViewModel
 import com.example.algorithms.viewmodels.profile.ProfileViewModel
@@ -38,6 +39,8 @@ val appModule = module {
     single { ApiClient.retrofit.create(ChatApi::class.java) }  //chat
     single { ProgressRepository(get()) }
 
+
+
     // ViewModels
     viewModel { AuthViewModel(get(), get(), get()) }
     viewModel { MenuViewModel() }
@@ -47,6 +50,7 @@ val appModule = module {
     viewModel { BubbleSortStepViewModel() }
     viewModel { SelectionSortStepViewModel() }
     viewModel { InsertionSortStepViewModel() }
+    viewModel { FavoritesViewModel(get()) }
     viewModel { QuickSortStepViewModel() }
     viewModel { LinearSearchViewModel() }
     viewModel { BinarySearchViewModel() }

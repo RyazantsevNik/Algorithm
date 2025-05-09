@@ -89,14 +89,14 @@ fun BottomBar(navController: NavHostController) {
             icon = {
                 NavigationItemIcon(
                     icon = Icons.Default.Search,
-                    isSelected = currentRoute == AppRoutes.ALGORITHMS,
+                    isSelected = currentRoute?.startsWith(AppRoutes.ALGORITHMS) == true,
                     contentDescription = "Алгоритмы"
                 )
             },
-            label = { NavigationItemText(text = "Алгоритмы", isSelected = currentRoute == AppRoutes.ALGORITHMS) },
-            selected = currentRoute == AppRoutes.ALGORITHMS,
+            label = { NavigationItemText(text = "Алгоритмы", isSelected = currentRoute?.startsWith(AppRoutes.ALGORITHMS) == true) },
+            selected = currentRoute?.startsWith(AppRoutes.ALGORITHMS) == true,
             onClick = {
-                navController.navigate(AppRoutes.ALGORITHMS) {
+                navController.navigate("${AppRoutes.ALGORITHMS}/Сортировка") {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
                 }

@@ -1,258 +1,239 @@
 package com.example.algorithms.screens.menu
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.algorithms.R
+import com.example.algorithms.di.main_api.AlgorithmProgress
 import com.example.algorithms.navigation.AppRoutes
-import com.example.algorithms.ui.theme.BackgroundBottom
-import com.example.algorithms.ui.theme.BackgroundTop
-import com.example.algorithms.ui.theme.PrimaryBlue
-import com.example.algorithms.ui.theme.TextPrimary
-import com.example.algorithms.ui.theme.TextSecondary
-import com.example.algorithms.ui.theme.LightBlue
+import com.example.algorithms.ui.theme.*
+import com.example.algorithms.utils.TokenManager
+import com.example.algorithms.viewmodels.profile.ProgressViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
+    val progressViewModel: ProgressViewModel = koinViewModel()
+    val progress by progressViewModel.progress.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        val token = TokenManager.getToken(context)
+        token?.let {
+            progressViewModel.loadProgress(it)
+        }
+    }
+
     Scaffold(
         topBar = {
-            Column {
-                TopAppBar(
-                    title = { Text("Главная") },
-                    actions = {
-                        IconButton(onClick = { navController.navigate(AppRoutes.PROFILE) }) {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "Профиль",
-                                tint = TextPrimary
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = BackgroundTop,
-                        titleContentColor = TextPrimary
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(BackgroundTop)
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Главная",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = TextPrimary,
+                        fontWeight = FontWeight.Bold
                     )
-                )
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                    IconButton(
+                        onClick = { navController.navigate(AppRoutes.LEARNING_MAP) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_robot_logo),
+                            contentDescription = "Карта обучения",
+                            tint = TextPrimary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
         }
     ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(padding)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(BackgroundTop, BackgroundBottom)
                     )
                 )
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-
-                ProgressSection()
-                FavoriteSection(navController)
-                RecommendationsSection(navController)
-                DailyTaskSection()
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProgressSection() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Ваш прогресс",
-                style = MaterialTheme.typography.titleLarge,
-                color = TextPrimary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LinearProgressIndicator(
-                progress = { 0.625f },
-                modifier = Modifier.fillMaxWidth(),
-                color = PrimaryBlue,
-                trackColor = LightBlue
-            )
-            Text(
-                text = "Изучено 10 из 16 алгоритмов",
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
-            )
-        }
-    }
-}
-
-@Composable
-private fun FavoriteSection(navController: NavHostController) {
-    Column(
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text(
-            text = "Избранное",
-            style = MaterialTheme.typography.titleMedium
-        )
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-
-
-
-
-
-
-        }
-    }
-}
-
-@Composable
-private fun RecommendationsSection(navController: NavHostController) {
-    Column(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(
-            text = "Рекомендации",
-            style = MaterialTheme.typography.titleMedium,
-            color = TextPrimary
-        )
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .clickable { 
-                    navController.navigate(AppRoutes.algorithmSelectionRoute("Быстрая сортировка"))
-                },
-            colors = CardDefaults.cardColors(containerColor = LightBlue)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "Продолжить изучение",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary
-                    )
-                    Text(
-                        text = "Быстрая сортировка",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary
+                items(categories) { category ->
+                    CategoryCard(
+                        category = category,
+                        progress = calculateCategoryProgress(category.title, progress),
+                        onClick = {
+                            navController.navigate("${AppRoutes.ALGORITHMS}/${category.title}")
+                        }
                     )
                 }
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    tint = PrimaryBlue
-                )
             }
         }
     }
 }
 
 @Composable
-private fun DailyTaskSection() {
+private fun CategoryCard(
+    category: Category,
+    progress: Float,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+            .aspectRatio(1f)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(category.gradient)
         ) {
-            Column {
-                Text(
-                    text = "Ежедневная задача",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = TextPrimary
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(id = category.imageRes),
+                    contentDescription = category.title,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
                 )
-                Text(
-                    text = "Изучите основы сортировки пузырьком",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
-                )
+
+                Column {
+                    Text(
+                        text = category.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(4.dp)),
+                        color = Color.White,
+                        trackColor = Color.White.copy(alpha = 0.3f)
+                    )
+                    
+                    Text(
+                        text = "${(progress * 100).toInt()}%",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
+                }
             }
-            CircularProgressIndicator(
-                progress = { 0.0f },
-                modifier = Modifier.size(40.dp),
-                color = PrimaryBlue,
-                trackColor = LightBlue
-            )
         }
     }
 }
 
-private data class FavoriteAlgorithm(
+private data class Category(
     val title: String,
-    val icon: ImageVector,
-    val color: Color
+    val imageRes: Int,
+    val gradient: Brush
 )
 
-private val favoriteAlgorithms = listOf(
-    FavoriteAlgorithm(
-        "Сортировка пузырьком",
-        Icons.Default.Add,
-        Color(0xFF1976D2)
+private val categories = listOf(
+    Category(
+        title = "Сортировка",
+        imageRes = R.drawable.im_sorting,
+        gradient = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF2196F3),
+                Color(0xFF1976D2)
+            )
+        )
     ),
-    FavoriteAlgorithm(
-        "Бинарный поиск",
-        Icons.Default.Search,
-        Color(0xFF388E3C)
+    Category(
+        title = "Поиск",
+        imageRes = R.drawable.im_search,
+        gradient = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFFFF9800),
+                Color(0xFFF57C00)
+            )
+        )
+    ),
+    Category(
+        title = "Графы",
+        imageRes = R.drawable.im_graph,
+        gradient = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF9C27B0),
+                Color(0xFF7B1FA2)
+            )
+        )
+    ),
+    Category(
+        title = "Математика",
+        imageRes = R.drawable.im_math,
+        gradient = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF4CAF50),
+                Color(0xFF388E3C)
+            )
+        )
     )
 )
+
+private fun calculateCategoryProgress(categoryTitle: String, progress: List<AlgorithmProgress>): Float {
+    val categoryAlgorithms = when (categoryTitle) {
+        "Сортировка" -> listOf("bubble_sort", "selection_sort", "insertion_sort", "quick_sort")
+        "Поиск" -> listOf("binary_search", "linear_search")
+        "Графы" -> listOf("dfs_search", "bfs_search")
+        "Математика" -> listOf("factorial", "fibonacci")
+        else -> emptyList()
+    }
+    
+    val completedCount = progress.count { it.algorithm in categoryAlgorithms && it.completed }
+    return if (categoryAlgorithms.isEmpty()) 0f else completedCount.toFloat() / categoryAlgorithms.size
+}
