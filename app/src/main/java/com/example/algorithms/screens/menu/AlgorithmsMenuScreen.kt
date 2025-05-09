@@ -55,6 +55,7 @@ import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -80,6 +81,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -108,6 +110,7 @@ import com.example.algorithms.utils.TokenManager
 import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.ui.text.font.FontWeight
+import com.example.algorithms.viewmodels.menu.FavoritesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -400,14 +403,11 @@ fun SubItem(
     viewModel: MenuViewModel
 ) {
     val progressViewModel: ProgressViewModel = koinViewModel()
+    val favoritesViewModel: FavoritesViewModel = koinViewModel()
     val progress by progressViewModel.progress.collectAsState()
     val algorithmKey = getAlgorithmKey(item.title)
     val isCompleted = progress.any { it.algorithm == algorithmKey && it.completed }
-    
-    Log.d("AlgorithmProgress", "Checking progress for: ${item.title}")
-    Log.d("AlgorithmProgress", "Algorithm key: $algorithmKey")
-    Log.d("AlgorithmProgress", "Is completed: $isCompleted")
-    Log.d("AlgorithmProgress", "Available progress: $progress")
+    val isFavorite by favoritesViewModel.favoriteIds.collectAsState()
     
     val scale by animateFloatAsState(
         targetValue = 1f,
@@ -431,8 +431,23 @@ fun SubItem(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         border = BorderStroke(
-            width = 1.dp,
-            color = Color(0xFFE0E0E0)
+            width = 2.dp,
+            brush = if (isCompleted) {
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF81C784),
+                        Color(0xFF4CAF50),
+                        Color(0xFF81C784)
+                    )
+                )
+            } else {
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFFE0E0E0),
+                        Color(0xFFBDBDBD)
+                    )
+                )
+            }
         )
     ) {
         Row(
@@ -476,8 +491,6 @@ fun SubItem(
                             "Быстрая сортировка" -> Icons.Default.Speed
                             "Обход в ширину" -> Icons.Default.Expand
                             "Обход в глубину" -> Icons.Default.CallSplit
-                            "Алгоритм Дейкстры" -> Icons.Default.Route
-                            "Алгоритм Крускала" -> Icons.Default.AccountTree
                             else -> Icons.Default.Code
                         },
                         contentDescription = item.title,
@@ -486,8 +499,7 @@ fun SubItem(
                             "Бинарный поиск", "Линейный поиск" -> Color(0xFFE65100)
                             "Сортировка пузырьком", "Сортировка вставками", 
                             "Сортировка выбором", "Быстрая сортировка" -> Color(0xFF1565C0)
-                            "Обход в ширину", "Обход в глубину",
-                            "Алгоритм Дейкстры", "Алгоритм Крускала" -> Color(0xFF7B1FA2)
+                            "Обход в ширину", "Обход в глубину"-> Color(0xFF424242)
                             else -> Color(0xFF424242)
                         },
                         modifier = Modifier.size(24.dp)
@@ -499,30 +511,31 @@ fun SubItem(
                         style = MaterialTheme.typography.titleMedium,
                         color = Color(0xFF212121)
                     )
-                    Text(
-                        text = item.title,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF757575)
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        repeat(item.starRating) {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = "Звезда",
+                                tint = SoftOrange,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
                 }
             }
-            if (isCompleted) {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(
-                            color = Color(0xFF4CAF50),
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Завершено",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+            IconButton(
+                onClick = { favoritesViewModel.toggleFavorite(item) },
+                modifier = Modifier.size(28.dp)
+            ) {
+                Icon(
+                    imageVector = if (item.title in isFavorite) Icons.Filled.Star else Icons.Outlined.Star,
+                    contentDescription = "Добавить в избранное",
+                    tint = if (item.title in isFavorite) SoftOrange else Color.Gray,
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
     }

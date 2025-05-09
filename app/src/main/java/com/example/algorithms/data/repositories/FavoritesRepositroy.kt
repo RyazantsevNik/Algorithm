@@ -23,16 +23,16 @@ class FavoritesRepository(context: Context) {
     fun toggleFavorite(algorithmId: String): Boolean {
         val currentFavorites = _favorites.value.toMutableSet()
         val isFavorite = algorithmId in currentFavorites
-        
+
         if (isFavorite) {
             currentFavorites.remove(algorithmId)
         } else {
             currentFavorites.add(algorithmId)
         }
-        
+
         _favorites.value = currentFavorites
         prefs.edit().putStringSet(KEY_FAVORITES, currentFavorites).apply()
-        
+
         return !isFavorite
     }
 
@@ -40,4 +40,4 @@ class FavoritesRepository(context: Context) {
         private const val PREFS_NAME = "favorites_prefs"
         private const val KEY_FAVORITES = "favorites"
     }
-} 
+}

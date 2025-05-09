@@ -1,5 +1,6 @@
 package com.example.algorithms.di
 
+import com.example.algorithms.data.repositories.FavoritesRepository
 import com.example.algorithms.di.ai_chat.ChatApi
 import com.example.algorithms.di.main_api.ApiClient
 import com.example.algorithms.di.main_api.AuthApi
@@ -28,6 +29,7 @@ import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
 import com.example.algorithms.viewmodels.step_sorting.InsertionSortStepViewModel
 import com.example.algorithms.viewmodels.step_sorting.QuickSortStepViewModel
 import com.example.algorithms.viewmodels.step_sorting.SelectionSortStepViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -38,7 +40,7 @@ val appModule = module {
     single { ApiClient.retrofit.create(ProgressApi::class.java) }
     single { ApiClient.retrofit.create(ChatApi::class.java) }  //chat
     single { ProgressRepository(get()) }
-
+    single { FavoritesRepository(androidContext()) }
 
 
     // ViewModels
@@ -50,7 +52,6 @@ val appModule = module {
     viewModel { BubbleSortStepViewModel() }
     viewModel { SelectionSortStepViewModel() }
     viewModel { InsertionSortStepViewModel() }
-    viewModel { FavoritesViewModel(get()) }
     viewModel { QuickSortStepViewModel() }
     viewModel { LinearSearchViewModel() }
     viewModel { BinarySearchViewModel() }
@@ -64,4 +65,5 @@ val appModule = module {
     viewModel { ProgressViewModel(get()) }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ChatViewModel(get(), get(), get()) }              //chat
+    viewModel { FavoritesViewModel(get()) }
 }
