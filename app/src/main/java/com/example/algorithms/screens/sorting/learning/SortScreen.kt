@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.example.algorithms.R
 import com.example.algorithms.viewmodels.step_sorting.BubbleSortStepViewModel
 import com.example.algorithms.viewmodels.step_sorting.base_class_for_step.BaseSortStepViewModel
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun SortScreen(viewModel: BaseSortStepViewModel) {
@@ -71,29 +74,94 @@ fun SortScreen(viewModel: BaseSortStepViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = { viewModel.goToPreviousStep() },
-                    enabled = viewModel.currentStepIndex > 0,
+                    onClick = { viewModel.goToStart() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF4A90E2),
-                        contentColor = Color.White
+                        containerColor = Color(0xFF90CAF9),
+                        contentColor = Color(0xFF0D47A1)
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_on_the_beginning),
+                        contentDescription = "Начало",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                Button(
+                    onClick = { viewModel.goToPreviousStep() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF90CAF9),
+                        contentColor = Color(0xFF0D47A1)
                     )
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_to_the_previous),
-                        contentDescription = "Previous",
+                        contentDescription = "Начало",
                         modifier = Modifier.size(24.dp)
                     )
                 }
-
+                Spacer(modifier = Modifier.width(4.dp))
                 Button(
                     onClick = { viewModel.handleNextStep() },
-                    enabled = viewModel.currentStepIndex < viewModel.steps.size - 1,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF90CAF9),
+                        contentColor = Color(0xFF0D47A1)
+                    )
                 ) {
-                    Text("Следующий шаг")
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_to_the_next),
+                        contentDescription = "Начало",
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
+                Spacer(modifier = Modifier.width(4.dp))
+                Button(
+                    onClick = { viewModel.goToEnd() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF90CAF9),
+                        contentColor = Color(0xFF0D47A1)
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_on_the_ending),
+                        contentDescription = "Конец",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Button(
+                onClick = { viewModel.toggleAutoMode() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (viewModel.isAuto) Color(0xFFFFC107) else Color(0xFF90CAF9),
+                    contentColor = if (viewModel.isAuto) Color.Black else Color(0xFF0D47A1)
+                )
+            ) {
+                Text(
+                    if (viewModel.isAuto) "Пауза" else "Авто",
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1
+                )
             }
         }
 
