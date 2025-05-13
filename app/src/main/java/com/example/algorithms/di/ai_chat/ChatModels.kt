@@ -24,6 +24,9 @@ data class ChatHistoryResponse(
     @SerializedName("chat_history") val chatHistory: List<Message>
 )
 
+data class MessageResponse(
+    @SerializedName("message") val message: String
+)
 
 data class Message(
     @SerializedName("role") val role: String,  // "user" или "assistant"

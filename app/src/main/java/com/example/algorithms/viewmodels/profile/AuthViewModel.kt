@@ -14,6 +14,10 @@ import com.example.algorithms.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 sealed class AuthResult {
     data object Loading : AuthResult()
@@ -32,6 +36,23 @@ class AuthViewModel(
     private val _authResult = MutableStateFlow<AuthResult?>(null)
     val authResult: StateFlow<AuthResult?> = _authResult
 
+    private fun handleError(e: Exception): String {
+        return when (e) {
+            is HttpException -> {
+                when (e.code()) {
+                    401 -> "Неверное имя пользователя или пароль"
+                    400 -> "Проверьте правильность введенных данных"
+                    409 -> "Пользователь с таким именем или email уже существует"
+                    500 -> "Ошибка сервера. Попробуйте позже"
+                    else -> "Произошла ошибка. Попробуйте позже"
+                }
+            }
+            is ConnectException, is UnknownHostException -> "Нет подключения к интернету"
+            is SocketTimeoutException -> "Превышено время ожидания ответа от сервера"
+            else -> "Произошла неизвестная ошибка. Попробуйте позже"
+        }
+    }
+
     fun register(username: String, email: String, password: String) {
         viewModelScope.launch {
             try {
@@ -46,7 +67,7 @@ class AuthViewModel(
                     token = response.accessToken
                 )
             } catch (e: Exception) {
-                _authResult.value = AuthResult.Error(e.message ?: "Неизвестная ошибка")
+                _authResult.value = AuthResult.Error(handleError(e))
             }
         }
     }
@@ -68,7 +89,7 @@ class AuthViewModel(
                 )
             } catch (e: Exception) {
                 AuthState.setAuthenticated(false)
-                _authResult.value = AuthResult.Error(e.message ?: "Ошибка входа")
+                _authResult.value = AuthResult.Error(handleError(e))
             }
         }
     }
@@ -81,9 +102,8 @@ class AuthViewModel(
                 _authResult.value = null
                 onLogoutComplete()
             } catch (e: Exception) {
-                _authResult.value = AuthResult.Error(e.message ?: "Ошибка выхода")
+                _authResult.value = AuthResult.Error(handleError(e))
             }
         }
     }
-
 }

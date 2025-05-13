@@ -34,12 +34,14 @@ class ChatViewModel(
 
     val isLoading = mutableStateOf(true)
     val isAuthenticated = mutableStateOf(false)
+    val userName = mutableStateOf("")
 
     init {
         viewModelScope.launch {
             profileViewModel.profileState.collect { profile ->
                 isAuthenticated.value = profile != null
                 isLoading.value = false
+                userName.value = profile?.username ?: ""
             }
         }
     }
@@ -92,6 +94,8 @@ class ChatViewModel(
             _loadingState.value = true
             _errorState.value = null
 
+            _chatMessages.add(Message("user", message))
+
             try {
                 val token = profileViewModel.getAuthToken()
                 val request = ChatRequest(message, _chatMessages.map { Message(it.role, it.content) })
@@ -99,11 +103,35 @@ class ChatViewModel(
 
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        _chatMessages.apply {
-                            add(Message("user", message))
-                            add(Message("assistant", it.response))
-                        }
+                        _chatMessages.add(Message("assistant", it.response))
                     }
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                handleNetworkError(e)
+            } finally {
+                _loadingState.value = false
+            }
+        }
+    }
+
+    fun clearChatHistory() {
+        if (!isAuthenticated.value) {
+            _errorState.value = "Требуется авторизация"
+            return
+        }
+
+        viewModelScope.launch {
+            _loadingState.value = true
+            _errorState.value = null
+
+            try {
+                val token = profileViewModel.getAuthToken()
+                val response = chatApi.clearChatHistory("Bearer $token")
+
+                if (response.isSuccessful) {
+                    _chatMessages.clear()
                 } else {
                     handleErrorResponse(response.code())
                 }

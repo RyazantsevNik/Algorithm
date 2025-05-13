@@ -50,11 +50,13 @@ import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.CallSplit
 import androidx.compose.material.icons.filled.Expand
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -531,9 +533,9 @@ fun SubItem(
                 modifier = Modifier.size(28.dp)
             ) {
                 Icon(
-                    imageVector = if (item.title in isFavorite) Icons.Filled.Star else Icons.Outlined.Star,
+                    imageVector = if (item.title in isFavorite) Icons.Filled.Favorite else Icons.Outlined.Favorite,
                     contentDescription = "Добавить в избранное",
-                    tint = if (item.title in isFavorite) SoftOrange else Color.Gray,
+                    tint = if (item.title in isFavorite) Color.Red else Color.Gray,
                     modifier = Modifier.size(20.dp)
                 )
             }
