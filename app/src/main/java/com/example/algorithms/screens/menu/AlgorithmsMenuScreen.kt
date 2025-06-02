@@ -1,6 +1,5 @@
 package com.example.algorithms.screens.menu
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -26,38 +25,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Fort
-import androidx.compose.material.icons.filled.LinearScale
-import androidx.compose.material.icons.filled.Merge
-import androidx.compose.material.icons.filled.SelectAll
-import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material.icons.filled.Speed
-import androidx.compose.material.icons.filled.Timeline
-import androidx.compose.material.icons.filled.BubbleChart
 import androidx.compose.material.icons.filled.AccountTree
+import androidx.compose.material.icons.filled.BubbleChart
 import androidx.compose.material.icons.filled.Calculate
-import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.CallSplit
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Expand
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Route
+import androidx.compose.material.icons.filled.LinearScale
+import androidx.compose.material.icons.filled.Merge
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,10 +74,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -102,17 +92,12 @@ import com.example.algorithms.navigation.AppRoutes
 import com.example.algorithms.ui.theme.BackgroundBottom
 import com.example.algorithms.ui.theme.BackgroundTop
 import com.example.algorithms.ui.theme.LightBlue
-import com.example.algorithms.ui.theme.PastelPurple
-import com.example.algorithms.ui.theme.PrimaryBlue
-import com.example.algorithms.ui.theme.SoftGreen
 import com.example.algorithms.ui.theme.SoftOrange
-import com.example.algorithms.ui.theme.TextSecondary
-import com.example.algorithms.viewmodels.menu.MenuViewModel
 import com.example.algorithms.utils.TokenManager
+import com.example.algorithms.viewmodels.menu.FavoritesViewModel
+import com.example.algorithms.viewmodels.menu.MenuViewModel
 import com.example.algorithms.viewmodels.profile.ProgressViewModel
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.ui.text.font.FontWeight
-import com.example.algorithms.viewmodels.menu.FavoritesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -260,7 +245,11 @@ fun AlgorithmsMenuScreen(
                                 .clickable {
                                     isSearchActive = false
                                     searchText = ""
-                                    navController.navigate(AppRoutes.algorithmSelectionRoute(item.title))
+                                    if (item.title in viewModel.directToTheory) {
+                                        navController.navigate(AppRoutes.theoryScreenRoute(item.title))
+                                    } else {
+                                        navController.navigate(AppRoutes.algorithmSelectionRoute(item.title))
+                                    }
                                 }
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                                 .background(MaterialTheme.colorScheme.surface),
@@ -426,7 +415,11 @@ fun SubItem(
             .padding(horizontal = 24.dp, vertical = 4.dp)
             .scale(scale)
             .clickable {
-                navController.navigate(AppRoutes.algorithmSelectionRoute(item.title))
+                if (item.title in viewModel.directToTheory) {
+                    navController.navigate(AppRoutes.theoryScreenRoute(item.title))
+                } else {
+                    navController.navigate(AppRoutes.algorithmSelectionRoute(item.title))
+                }
             },
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFF8F9FA)

@@ -17,12 +17,14 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 abstract class SortingViewModel : ViewModel() {
 
     protected val _state = MutableStateFlow(SortingState())
     val state: StateFlow<SortingState> = _state.asStateFlow()
 
     val animatedOffsets = mutableStateListOf<Animatable<Float, AnimationVector1D>>()
+
 
     init {
         reset()

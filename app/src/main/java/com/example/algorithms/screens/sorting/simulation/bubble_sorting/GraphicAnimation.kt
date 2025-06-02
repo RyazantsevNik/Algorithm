@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import com.example.algorithms.viewmodels.simulation_sorting.base_class_for_simulation.SortingViewModel
 
+
+
 @Composable
 fun GraphicAnimation(viewModel: SortingViewModel){
     val state by viewModel.state.collectAsState()

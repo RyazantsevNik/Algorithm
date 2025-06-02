@@ -74,7 +74,6 @@ class FactorialStepViewModel : ViewModel(), KoinComponent {
             _currentExplanation.value = step.explanation.text
             step.visual?.let { _visibleSteps.add(it) }
             
-            // Проверяем, достигли ли мы последнего шага
             if (currentIndex == stepPairs.lastIndex && !isCompleted) {
                 isCompleted = true
                 Log.d("Factorial", "Token value: $userToken")

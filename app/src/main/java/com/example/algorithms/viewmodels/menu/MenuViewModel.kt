@@ -15,7 +15,13 @@ import org.koin.core.component.inject
 
 class MenuViewModel : ViewModel(), KoinComponent {
     private val progressViewModel: ProgressViewModel by inject()
-    
+
+    val directToTheory = setOf(
+        "Быстрая сортировка",
+        "Факториал",
+        "Числа Фибоначчи"
+    )
+
     private val _expandedCategories = MutableStateFlow(
         mapOf(
             "Сортировка" to true,

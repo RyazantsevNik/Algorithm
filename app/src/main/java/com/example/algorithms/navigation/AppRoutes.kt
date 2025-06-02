@@ -20,6 +20,7 @@ object AppRoutes {
     const val THEORY_SCREEN = "$THEORY_SCREEN_BASE/{algorithmTitle}"
     const val PRACTISE_SCREEN = "$PRACTISE_SCREEN_BASE/{algorithmTitle}"
 
+
     fun algorithmSelectionRoute(algorithmTitle: String) = "$ALGORITHM_SELECTION_BASE/$algorithmTitle"
     fun theoryScreenRoute(algorithmTitle: String) = "$THEORY_SCREEN_BASE/$algorithmTitle"
     fun practiceScreenRoute(algorithmTitle: String) = "$PRACTISE_SCREEN_BASE/$algorithmTitle"
